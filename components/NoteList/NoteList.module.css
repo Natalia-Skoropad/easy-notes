@@ -1,0 +1,9 @@
+.list {
+  --min: 260px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
+  gap: clamp(14px, 2.2vw, 24px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

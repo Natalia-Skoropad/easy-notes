@@ -1,0 +1,15 @@
+.main {
+  padding-block: 28px;
+}
+
+.container {
+  max-width: var(--container-d);
+  margin-inline: auto;
+  padding-inline: var(--container-pad-m);
+}
+
+@media (min-width: 1320px) {
+  .container {
+    padding-inline: var(--container-pad-d);
+  }
+}

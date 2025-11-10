@@ -1,0 +1,50 @@
+.linkButton {
+  --btn-bg: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.25),
+    rgba(89, 195, 106, 0.15)
+  );
+  --btn-border: color-mix(in oklab, var(--accent), #000 60%);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.linkButton:hover {
+  filter: brightness(1.05);
+}
+
+.cancel {
+  --btn-bg: linear-gradient(
+    180deg,
+    rgba(196, 154, 108, 0.25),
+    rgba(196, 154, 108, 0.12)
+  );
+  --btn-border: color-mix(in oklab, var(--accent-2), #000 60%);
+}
+
+.delete {
+  --btn-bg: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 0.3),
+    rgba(239, 68, 68, 0.12)
+  );
+  --btn-border: color-mix(in oklab, var(--danger), #000 60%);
+}
+
+.block {
+  display: inline-flex;
+  width: 100%;
+}

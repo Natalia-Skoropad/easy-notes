@@ -1,0 +1,8 @@
+.box {
+  display: grid;
+  gap: 10px;
+  justify-items: left;
+  align-items: center;
+  min-width: min(520px, 90vw);
+  padding: 5px 0;
+}

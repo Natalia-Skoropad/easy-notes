@@ -1,0 +1,150 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 10px 32px;
+  backdrop-filter: blur(10px);
+  background: rgba(10, 12, 18, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* base links */
+
+.link {
+  position: relative;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  padding: 4px 0;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+/* profile dropdown */
+
+.profileWrapper {
+  position: relative;
+}
+
+.profileBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 26, 36, 0.98);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+}
+
+.profileBtn:hover {
+  background: rgba(35, 46, 63, 1);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.avatarStub {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarStub svg {
+  width: 11px;
+  height: 11px;
+  color: var(--text);
+}
+
+.chevron {
+  opacity: 0.7;
+}
+
+.dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  min-width: 130px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(13, 17, 24, 0.98);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.18s ease-out both;
+}
+
+.dropdownLink {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.dropdownLink:hover {
+  background: rgba(89, 195, 106, 0.12);
+  color: var(--accent);
+}
+
+/* animation */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

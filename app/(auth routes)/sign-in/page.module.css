@@ -1,0 +1,129 @@
+.section {
+  padding-block: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: min(420px, 100%);
+  padding: 24px 22px 20px;
+  border-radius: var(--radius-3);
+  border: 1px solid var(--border);
+  background: radial-gradient(
+      260px 260px at 0 0,
+      rgba(89, 195, 106, 0.16),
+      transparent
+    ),
+    var(--surface-1);
+  box-shadow: var(--shadow-1);
+  display: grid;
+  gap: 14px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.input {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 9px 10px;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.input:focus-visible {
+  outline: 1px solid var(--accent);
+  box-shadow: 0 0 0 1px rgba(89, 195, 106, 0.3);
+}
+
+/* --- error state --- */
+
+.inputError {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px rgba(255, 86, 86, 0.35);
+}
+
+.errorField {
+  position: absolute;
+  left: 12px;
+  bottom: 0px;
+  padding: 2px 10px 2px;
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  background: color-mix(in oklab, var(--surface-1), var(--danger) 12%);
+  pointer-events: none;
+}
+
+.errorCommon {
+  min-height: 16px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.submit {
+  margin-top: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--accent), #000 55%);
+  background: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.32),
+    rgba(89, 195, 106, 0.16)
+  );
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.submit:hover {
+  filter: brightness(1.05);
+  box-shadow: var(--shadow-1);
+}
+
+.helper {
+  margin: 0;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.inputError:focus-visible {
+  outline: 1px solid var(--danger);
+  box-shadow: 0 0 0 1px rgba(255, 86, 86, 0.35);
+}

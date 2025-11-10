@@ -1,0 +1,31 @@
+.form {
+  display: grid;
+  gap: 16px;
+  max-width: 720px;
+}
+
+.label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.form :where(input, textarea, select) {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.form :where(textarea) {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}

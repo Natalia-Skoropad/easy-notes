@@ -1,0 +1,22 @@
+.wrap {
+  display: grid;
+  gap: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow-1);
+}
+
+.title {
+  margin: 0;
+}
+
+.body {
+  opacity: 0.95;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 14px;
+}
