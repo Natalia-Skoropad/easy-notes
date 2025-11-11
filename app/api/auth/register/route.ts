@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { parse } from 'cookie';
+import { cookies } from 'next/headers';
 
 import { api, ApiError } from '../../api';
 
@@ -8,9 +8,8 @@ import { api, ApiError } from '../../api';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-
   try {
-    const apiRes = await api.post('/auth/register', body);
+    const apiRes = await api.post('auth/register', body);
     const cookieStore = await cookies();
     const setCookie = apiRes.headers['set-cookie'];
 
@@ -19,11 +18,10 @@ export async function POST(req: NextRequest) {
 
       for (const cookieStr of cookieArray) {
         const parsed = parse(cookieStr);
-
         const options = {
           expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
           path: parsed.Path,
-          maxAge: parsed['Max-Age'] ? Number(parsed['Max-Age']) : undefined,
+          maxAge: Number(parsed['Max-Age']),
         };
 
         if (parsed.accessToken) {
@@ -33,17 +31,18 @@ export async function POST(req: NextRequest) {
           cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
       }
+
       return NextResponse.json(apiRes.data);
     }
-
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   } catch (error) {
-    const err = error as ApiError;
     return NextResponse.json(
       {
-        error: err.response?.data?.error ?? err.message,
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
       },
-      { status: err.response?.status ?? 500 }
+      { status: (error as ApiError).status }
     );
   }
 }

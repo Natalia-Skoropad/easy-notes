@@ -8,7 +8,7 @@ function LoadingNoteModal() {
     <Modal>
       <div className={css.box}>
         <div className="spinner" />
-        <p>Завантаження нотатки…</p>
+        <p>Loading note…</p>
       </div>
     </Modal>
   );

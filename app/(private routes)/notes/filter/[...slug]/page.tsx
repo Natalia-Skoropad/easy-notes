@@ -10,10 +10,8 @@ interface NotesByCategoryProps {
 
 async function NotesByCategory({ params }: NotesByCategoryProps) {
   const { slug } = await params;
-
   const category = slug[0] === 'all' ? undefined : slug[0];
-
-  const response = await getNotes(category ? { tag: category } : undefined);
+  const response = await getNotes(category);
 
   return (
     <div>

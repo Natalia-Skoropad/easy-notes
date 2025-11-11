@@ -22,8 +22,8 @@ async function NotePreview({ params }: NotePreviewProps) {
         </>
       ) : (
         <>
-          <h2>Не вдалося завантажити нотатку</h2>
-          <p>Сервер повернув помилку. Спробуйте ще раз або пізніше.</p>
+          <h2>Failed to load note. Please try again later.</h2>
+          <p>The server returned an error. Please try again later.</p>
         </>
       )}
     </Modal>

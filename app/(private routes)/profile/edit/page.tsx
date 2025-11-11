@@ -4,37 +4,34 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { AvatarPicker, Button } from '@/app/components';
-import { getMe, updateMe, uploadImage } from '@/lib/api/clientApi';
+import { updateMe, getMe, uploadImage } from '@/lib/api/clientApi';
 
 //===========================================================================
 
 function EditProfile() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [userName, setUserName] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     getMe().then(user => {
-      setUsername(user.username || '');
-      setAvatar(user.avatar || '');
+      setUserName(user.userName ?? '');
+      setPhotoUrl(user.photoUrl ?? '');
     });
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value);
+  };
 
+  const handleSaveUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     try {
-      let avatarUrl = avatar;
-
-      if (file) {
-        avatarUrl = await uploadImage(file);
-      }
-
-      await updateMe({ username, avatar: avatarUrl });
-      router.push('/profile');
+      const newPhotoUrl = imageFile ? await uploadImage(imageFile) : '';
+      await updateMe({ userName, photoUrl: newPhotoUrl });
     } catch (error) {
-      console.error('Failed to update profile', error);
+      console.error('Oops, some error:', error);
     }
   };
 
@@ -43,22 +40,17 @@ function EditProfile() {
   };
 
   return (
-    <section>
+    <div>
       <h1>Edit profile</h1>
+      <AvatarPicker profilePhotoUrl={photoUrl} onChangePhoto={setImageFile} />
 
-      <AvatarPicker profilePhotoUrl={avatar} onChangePhoto={setFile} />
-
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSaveUser}>
         <label>
           Username
-          <input
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            required
-          />
+          <input value={userName} onChange={handleChange} required />
         </label>
 
-        <div style={{ marginTop: 16, display: 'flex', gap: 12 }}>
+        <div>
           <Button type="submit" text="Save" />
           <Button
             type="button"
@@ -68,7 +60,7 @@ function EditProfile() {
           />
         </div>
       </form>
-    </section>
+    </div>
   );
 }
 

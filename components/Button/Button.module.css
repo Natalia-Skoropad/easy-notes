@@ -42,3 +42,16 @@
   );
   --btn-border: color-mix(in oklab, var(--danger), #000 60%);
 }
+
+.logout {
+  font-size: 14px;
+  font-weight: 400;
+  padding: 8px 10px;
+  border-radius: 10px;
+  --btn-bg: linear-gradient(
+    180deg,
+    rgba(196, 154, 108, 0.25),
+    rgba(196, 154, 108, 0.12)
+  );
+  --btn-border: color-mix(in oklab, var(--accent-2), #000 60%);
+}

@@ -5,16 +5,16 @@ import { api, ApiError } from '../api';
 
 export async function GET() {
   try {
-    const { data } = await api.get('/categories');
+    const { data } = await api('/categories');
     return NextResponse.json(data);
   } catch (error) {
-    const err = error as ApiError;
-
     return NextResponse.json(
       {
-        error: err.response?.data?.error ?? err.message,
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
       },
-      { status: err.response?.status ?? 500 }
+      { status: (error as ApiError).status }
     );
   }
 }

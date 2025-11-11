@@ -1,56 +1,37 @@
 'use client';
+import { useEffect } from 'react';
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-
-import { checkSession, getMe, logout } from '@/lib/api/clientApi';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { checkSession, getMe } from '../../lib/api/clientApi';
+import { useAuthStore } from '../../lib/stores/authStore';
 
 //===========================================================================
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
+
 //===========================================================================
 
 function AuthProvider({ children }: AuthProviderProps) {
-  const [isChecking, setIsChecking] = useState(true);
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const setUser = useAuthStore(s => s.setUser);
-  const clearIsAuthenticated = useAuthStore(s => s.clearIsAuthenticated);
-
-  const isPrivate =
-    pathname.startsWith('/profile') || pathname.startsWith('/notes');
+  const setUser = useAuthStore(state => state.setUser);
+  const clearIsAuthenticated = useAuthStore(
+    state => state.clearIsAuthenticated
+  );
 
   useEffect(() => {
-    const run = async () => {
-      try {
-        const ok = await checkSession();
-        if (ok) {
-          const user = await getMe();
-          setUser(user);
-        } else {
-          clearIsAuthenticated();
-          if (isPrivate) {
-            await logout();
-            router.replace('/sign-in');
-          }
-        }
-      } finally {
-        setIsChecking(false);
+    const fetchUser = async () => {
+      const isAuthenticated = await checkSession();
+      if (isAuthenticated) {
+        const user = await getMe();
+        if (user) setUser(user);
+      } else {
+        clearIsAuthenticated();
       }
     };
+    fetchUser();
+  }, [setUser, clearIsAuthenticated]);
 
-    run();
-  }, [setUser, clearIsAuthenticated, isPrivate, router]);
-
-  if (isChecking && isPrivate) {
-    return <div className="spinner" aria-label="Checking session..." />;
-  }
-
-  return <>{children}</>;
+  return children;
 }
 
 export default AuthProvider;

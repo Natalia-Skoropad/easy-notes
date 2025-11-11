@@ -5,12 +5,10 @@ import { api, ApiError } from '../api';
 
 export async function GET(request: NextRequest) {
   const categoryId = request.nextUrl.searchParams.get('categoryId');
-
   try {
     const { data } = await api('/notes', {
       params: { categoryId },
     });
-
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
@@ -31,6 +29,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const { data } = await api.post('/notes', body);
+
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(

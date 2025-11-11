@@ -26,6 +26,8 @@ const signUpSchema = Yup.object({
 
 type SignUpForm = RegisterRequest;
 
+//===========================================================================
+
 function SignUp() {
   const router = useRouter();
   const setUser = useAuthStore(state => state.setUser);

@@ -13,7 +13,7 @@ interface NoteDraftStore {
 const initialDraft: NewNoteData = {
   title: '',
   content: '',
-  tag: '',
+  categoryId: '',
 };
 //===========================================================================
 

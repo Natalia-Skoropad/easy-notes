@@ -7,7 +7,7 @@ import css from './Button.module.css';
 
 interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
-  variant?: 'normal' | 'cancel' | 'delete';
+  variant?: 'normal' | 'cancel' | 'delete' | 'logout';
   text: string;
   type?: 'submit' | 'button';
 }

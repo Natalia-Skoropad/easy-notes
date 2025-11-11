@@ -16,12 +16,8 @@ async function Profile() {
       </div>
 
       <div>
-        <h2>Name: {user.username}</h2>
-        <h2>Email: {user.email}</h2>
-        <p>
-          Some description: Lorem ipsum dolor sit amet consectetur adipisicing
-          elit...
-        </p>
+        <h2>Name: {user.userName}</h2>
+        <h3>Email: {user.email}</h3>
       </div>
     </section>
   );

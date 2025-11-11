@@ -15,11 +15,11 @@ function ErrorInModal({ error, reset }: ErrorProps) {
   return (
     <Modal>
       <div style={{ display: 'grid', gap: 12 }}>
-        <h2>Не вдалося завантажити нотатку</h2>
-        <p>{error.message || 'Сталася помилка. Спробуйте пізніше.'}</p>
+        <h2>Failed to load note. Please try again later.</h2>
+        <p>{error.message || 'An error occurred. Please try again later.'}</p>
 
         <button className="btn-reset anim-button" onClick={reset}>
-          Спробувати знову
+          Try again
         </button>
       </div>
     </Modal>

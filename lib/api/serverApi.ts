@@ -6,19 +6,19 @@ import type { User } from '@/types/user';
 
 export const checkServerSession = async () => {
   const cookieStore = await cookies();
-  const { data } = await nextServer.get('/auth/session', {
+  const res = await nextServer.get('/auth/session', {
     headers: {
       Cookie: cookieStore.toString(),
     },
   });
-  return data as { success: boolean };
+  return res;
 };
 
 //===========================================================================
 
 export const getServerMe = async (): Promise<User> => {
   const cookieStore = await cookies();
-  const { data } = await nextServer.get<User>('/users/me', {
+  const { data } = await nextServer.get('/auth/me', {
     headers: {
       Cookie: cookieStore.toString(),
     },

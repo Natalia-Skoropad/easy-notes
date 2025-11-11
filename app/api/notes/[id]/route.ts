@@ -1,29 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { api, ApiError } from '../../api';
 
 //===========================================================================
 
-interface GetProps {
+interface Props {
   params: Promise<{ id: string }>;
 }
 
 //===========================================================================
 
-export async function GET(_req: Request, { params }: GetProps) {
-  void _req;
+export async function GET(request: NextRequest, { params }: Props) {
+  void request;
   const { id } = await params;
-
   try {
-    const { data } = await api.get(`/notes/${id}`);
+    const { data } = await api(`/notes/${id}`);
+
     return NextResponse.json(data);
   } catch (error) {
-    const err = error as ApiError;
-
     return NextResponse.json(
       {
-        error: err.response?.data?.error ?? err.message,
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
       },
-      { status: err.response?.status ?? 500 }
+      { status: (error as ApiError).status }
     );
   }
 }

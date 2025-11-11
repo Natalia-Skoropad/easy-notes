@@ -8,7 +8,7 @@ export interface Note {
   updatedAt: string;
 }
 
-export interface NotesResponse {
+export interface NoteListResponse {
   notes: Note[];
   total: number;
 }

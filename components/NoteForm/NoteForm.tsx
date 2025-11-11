@@ -70,8 +70,8 @@ function NoteForm({ categories }: NoteFormProps) {
       <label className={css.label}>
         Category
         <select
-          name="tag"
-          defaultValue={draft?.tag || ''}
+          name="categoryId"
+          defaultValue={draft?.categoryId || ''}
           onChange={handleChange}
           required
         >
@@ -79,7 +79,7 @@ function NoteForm({ categories }: NoteFormProps) {
             Choose category…
           </option>
           {categories.map(c => (
-            <option key={c.id} value={c.name}>
+            <option key={c.id} value={c.id}>
               {c.name}
             </option>
           ))}

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
 import css from './AvatarPicker.module.css';
 
@@ -14,9 +14,20 @@ interface AvatarPickerProps {
 //===========================================================================
 
 function AvatarPicker({ profilePhotoUrl, onChangePhoto }: AvatarPickerProps) {
-  const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>(profilePhotoUrl ?? '');
   const [error, setError] = useState<string>('');
-  const previewUrl = localPreview ?? profilePhotoUrl ?? '';
+
+  useEffect(() => {
+    if (!profilePhotoUrl) return;
+
+    const id = setTimeout(() => {
+      setPreviewUrl(prev =>
+        prev === profilePhotoUrl ? prev : profilePhotoUrl
+      );
+    }, 0);
+
+    return () => clearTimeout(id);
+  }, [profilePhotoUrl]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,14 +50,14 @@ function AvatarPicker({ profilePhotoUrl, onChangePhoto }: AvatarPickerProps) {
     const reader = new FileReader();
     reader.onloadend = () => {
       const result = typeof reader.result === 'string' ? reader.result : '';
-      setLocalPreview(result);
+      setPreviewUrl(result);
     };
     reader.readAsDataURL(file);
   };
 
   const handleRemove = () => {
     onChangePhoto(null);
-    setLocalPreview(null);
+    setPreviewUrl('');
   };
 
   return (

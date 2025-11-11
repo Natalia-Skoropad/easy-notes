@@ -33,7 +33,7 @@ function NoteDetailsClient() {
 
   if (isLoading) return <p>Loading...</p>;
   if (error || !note)
-    return <p>Не вдалося завантажити нотатку. Спробуйте пізніше.</p>;
+    return <p>Failed to load note. Please try again later.</p>;
 
   const formattedDate = note.updatedAt
     ? `Updated at: ${note.updatedAt}`

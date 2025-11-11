@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+
 import { api, ApiError } from '../../api';
 
 //===========================================================================
@@ -8,7 +9,7 @@ export async function GET() {
   const cookieStore = await cookies();
 
   try {
-    const { data } = await api.get('/users/me', {
+    const { data } = await api.get('/auth/me', {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -16,23 +17,24 @@ export async function GET() {
 
     return NextResponse.json(data);
   } catch (error) {
-    const err = error as ApiError;
-
     return NextResponse.json(
-      { error: err.response?.data?.error ?? err.message },
-      { status: err.response?.status ?? 500 }
+      {
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
+      },
+      { status: (error as ApiError).status }
     );
   }
 }
 
 //===========================================================================
 
-export async function PATCH(req: NextRequest) {
+export async function PUT(request: Request) {
   const cookieStore = await cookies();
-  const body = await req.json();
-
+  const body = await request.json();
   try {
-    const { data } = await api.patch('/users/me', body, {
+    const { data } = await api.put('/auth/me', body, {
       headers: {
         Cookie: cookieStore.toString(),
       },
@@ -40,11 +42,13 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error) {
-    const err = error as ApiError;
-
     return NextResponse.json(
-      { error: err.response?.data?.error ?? err.message },
-      { status: err.response?.status ?? 500 }
+      {
+        error:
+          (error as ApiError).response?.data?.error ??
+          (error as ApiError).message,
+      },
+      { status: (error as ApiError).status }
     );
   }
 }
