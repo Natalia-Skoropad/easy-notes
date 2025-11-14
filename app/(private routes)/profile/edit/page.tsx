@@ -73,10 +73,7 @@ function EditProfile() {
           </div>
 
           <div className={css.avatarArea}>
-            <AvatarPicker
-              profilePhotoUrl={avatar}
-              onChangePhoto={handleChangePhoto}
-            />
+            <AvatarPicker onChangePhoto={handleChangePhoto} />
           </div>
         </div>
 

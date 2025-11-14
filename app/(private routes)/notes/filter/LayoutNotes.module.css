@@ -1,7 +1,7 @@
 .container {
   display: grid;
   gap: 20px;
-  padding-block: 32px 44px 32px 44px;
+  padding-block: 32px 44px;
 }
 
 .sidebar {

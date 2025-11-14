@@ -98,6 +98,12 @@
 }
 
 @media (min-width: 768px) {
+  .img {
+    max-height: 300px;
+  }
+}
+
+@media (min-width: 1440px) {
   .hero {
     grid-template-columns: 500px minmax(360px, 1fr);
     grid-template-areas:

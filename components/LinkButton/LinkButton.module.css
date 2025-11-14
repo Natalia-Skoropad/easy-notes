@@ -12,6 +12,7 @@
   gap: 8px;
   padding: 10px 16px;
   border-radius: 10px;
+  height: 40px;
   border: 1px solid var(--btn-border);
   background: var(--btn-bg);
   color: var(--text);

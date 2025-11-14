@@ -10,7 +10,6 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { logout } from '@/lib/api/clientApi';
 import { Button } from '@/app/components';
 
-import Image from 'next/image';
 import css from '../Header/Header.module.css';
 
 //===========================================================================
@@ -158,17 +157,7 @@ function AuthNavigation() {
           onClick={() => setIsProfileOpen(prev => !prev)}
         >
           <span className={css.avatarStub}>
-            {user?.avatar ? (
-              <Image
-                src={user.avatar}
-                alt={user.username || 'Profile photo'}
-                className={css.avatar}
-                width={11}
-                height={11}
-              />
-            ) : (
-              <User size={11} />
-            )}
+            <User size={11} />
           </span>
 
           <span>{user?.username || 'Profile'}</span>

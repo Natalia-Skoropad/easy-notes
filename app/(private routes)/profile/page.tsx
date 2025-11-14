@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { LinkButton } from '@/app/components';
 import { getMe } from '@/lib/api/serverApi';
 
@@ -23,19 +22,8 @@ async function Profile() {
         <div className={css.topRow}>
           {/* Avatar */}
           <div className={css.avatarWrap}>
-            {user.avatar ? (
-              <Image
-                src={user.avatar}
-                alt={user.username || 'Profile photo'}
-                fill
-                sizes="80px"
-                className={css.avatar}
-              />
-            ) : (
-              <div className={css.avatarStub}>{initials}</div>
-            )}
+            <div className={css.avatarStub}>{initials}</div>
           </div>
-
           {/* Heading */}
           <div>
             <div className={css.badge}>Account overview</div>
