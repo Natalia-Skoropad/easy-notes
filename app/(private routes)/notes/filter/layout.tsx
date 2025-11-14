@@ -1,4 +1,4 @@
-import css from './notes.module.css';
+import css from './LayoutNotes.module.css';
 
 //===========================================================================
 
@@ -11,9 +11,9 @@ interface NotesLayoutProps {
 
 function NotesLayout({ children, sidebar }: NotesLayoutProps) {
   return (
-    <section className={css.wrap}>
+    <section className={css.container}>
       <aside className={css.sidebar}>{sidebar}</aside>
-      <div className={css.content}>{children}</div>
+      <div className={css.notesWrapper}>{children}</div>
     </section>
   );
 }

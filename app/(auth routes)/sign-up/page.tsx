@@ -2,25 +2,30 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import * as Yup from 'yup';
 
 import { register, type RegisterRequest } from '@/lib/api/clientApi';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { useAuthStore } from '@/lib/store/authStore';
 import { ApiError } from '@/app/api/api';
+import { Button } from '@/app/components';
 
 import css from './page.module.css';
 
 //===========================================================================
 
 const signUpSchema = Yup.object({
-  userName: Yup.string()
+  username: Yup.string()
     .min(2, 'Username must be at least 2 characters')
+    .max(20, 'No more than 20 characters')
     .required('Username is required'),
   email: Yup.string()
     .email('Enter a valid email.')
     .required('Email is required'),
+
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
+    .max(20, 'No more than 20 characters')
     .required('Password is required'),
 });
 
@@ -33,7 +38,7 @@ function SignUp() {
   const setUser = useAuthStore(state => state.setUser);
 
   const [values, setValues] = useState<SignUpForm>({
-    userName: '',
+    username: '',
     email: '',
     password: '',
   });
@@ -117,24 +122,24 @@ function SignUp() {
 
         <form className={css.form} onSubmit={handleSubmit} noValidate>
           <label className={css.label}>
-            <span>Username</span>
+            <span>Username*</span>
             <input
               className={`${css.input} ${
-                errors.userName ? css.inputError : ''
+                errors.username ? css.inputError : ''
               }`}
               type="text"
-              name="userName"
+              name="username"
               placeholder="Your name"
-              value={values.userName}
+              value={values.username}
               onChange={handleChange}
             />
-            {errors.userName && (
-              <span className={css.errorField}>{errors.userName}</span>
+            {errors.username && (
+              <span className={css.errorField}>{errors.username}</span>
             )}
           </label>
 
           <label className={css.label}>
-            <span>Email</span>
+            <span>Email*</span>
             <input
               className={`${css.input} ${errors.email ? css.inputError : ''}`}
               type="email"
@@ -149,7 +154,7 @@ function SignUp() {
           </label>
 
           <label className={css.label}>
-            <span>Password</span>
+            <span>Password*</span>
             <input
               className={`${css.input} ${
                 errors.password ? css.inputError : ''
@@ -166,17 +171,14 @@ function SignUp() {
           </label>
 
           {authError && <p className={css.errorCommon}>{authError}</p>}
-
-          <button type="submit" className={css.submit}>
-            Sign up
-          </button>
+          <Button type="submit" text="Register" variant="normal" />
         </form>
 
         <p className={css.helper}>
           Already have an account?{' '}
-          <a href="/sign-in" className={css.link}>
+          <Link href="/sign-in" className={css.link}>
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </section>

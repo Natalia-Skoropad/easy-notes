@@ -4,17 +4,17 @@
   background: rgba(4, 6, 10, 0.6);
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 16px;
   z-index: 100;
 }
 
-.dialog {
+.modal {
+  width: 100%;
   max-width: 720px;
-  width: min(720px, 100%);
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--radius-3);
-  padding: 24px;
+  padding: 20px;
   box-shadow: var(--shadow-2);
 }
 
@@ -23,4 +23,14 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .backdrop {
+    padding: 24px;
+  }
+
+  .modal {
+    padding: 24px;
+  }
 }

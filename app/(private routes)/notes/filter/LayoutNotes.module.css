@@ -1,0 +1,25 @@
+.container {
+  display: grid;
+  gap: 20px;
+  padding-block: 32px 44px 32px 44px;
+}
+
+.sidebar {
+  order: -1;
+}
+
+.notesWrapper {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 960px) {
+  .container {
+    grid-template-columns: 220px minmax(0, 1fr);
+    align-items: flex-start;
+  }
+
+  .sidebar {
+    order: 0;
+  }
+}

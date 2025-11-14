@@ -85,28 +85,6 @@
   color: var(--danger);
 }
 
-.submit {
-  margin-top: 6px;
-  width: 100%;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid color-mix(in oklab, var(--accent), #000 55%);
-  background: linear-gradient(
-    180deg,
-    rgba(89, 195, 106, 0.32),
-    rgba(89, 195, 106, 0.16)
-  );
-  color: var(--text);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.submit:hover {
-  filter: brightness(1.05);
-  box-shadow: var(--shadow-1);
-}
-
 .helper {
   margin: 0;
   margin-top: 4px;

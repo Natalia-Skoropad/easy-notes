@@ -1,21 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Category, getCategories } from '@/lib/api/clientApi';
+import { useState } from 'react';
+import type { NoteTag } from '@/types/note';
 
 import css from './CategoriesMenu.module.css';
+
+//===========================================================================
+
+const TAGS: NoteTag[] = [
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+  'Todo',
+];
 
 //===========================================================================
 
 function CategoriesMenu() {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const toggle = () => setIsOpenMenu(prev => !prev);
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    getCategories().then(data => setCategories(data));
-  }, []);
 
   return (
     <div className={css.menuContainer}>
@@ -29,10 +39,13 @@ function CategoriesMenu() {
               All notes
             </Link>
           </li>
-          {categories.map(category => (
-            <li key={category.id} className={css.menuItem}>
-              <Link href={`/notes/filter/${category.id}`} onClick={toggle}>
-                {category.name}
+          {TAGS.map(tag => (
+            <li key={tag} className={css.menuItem}>
+              <Link
+                href={`/notes/filter/${encodeURIComponent(tag)}`}
+                onClick={toggle}
+              >
+                {tag}
               </Link>
             </li>
           ))}

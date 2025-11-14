@@ -1,0 +1,36 @@
+.pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(20, 26, 36, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+}
+
+.pagination li {
+  list-style: none;
+}
+
+.pagination a {
+  min-width: 26px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.pagination a:hover {
+  background: rgba(89, 195, 106, 0.15);
+}
+
+.active a {
+  background: rgba(89, 195, 106, 0.9);
+  color: #020617;
+}
+
+.disabled a {
+  opacity: 0.4;
+  pointer-events: none;
+}

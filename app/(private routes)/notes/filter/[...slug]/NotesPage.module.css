@@ -1,0 +1,26 @@
+.app {
+  display: grid;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(24px, 2.6vw, 30px);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.isLoading,
+.isError {
+  font-size: 14px;
+}
+
+.isError {
+  color: var(--danger);
+}

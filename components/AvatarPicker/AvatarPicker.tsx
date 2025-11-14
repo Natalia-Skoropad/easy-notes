@@ -2,6 +2,8 @@
 
 import { ChangeEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { Button } from '@/app/components';
+
 import css from './AvatarPicker.module.css';
 
 //===========================================================================
@@ -29,54 +31,57 @@ function AvatarPicker({ profilePhotoUrl, onChangePhoto }: AvatarPickerProps) {
     return () => clearTimeout(id);
   }, [profilePhotoUrl]);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setError('');
 
-    if (!file) return;
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError('Only images');
+        return;
+      }
 
-    if (!file.type.startsWith('image/')) {
-      setError('Only images');
-      return;
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Max file size 5MB');
+        return;
+      }
+
+      onChangePhoto(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Max file size 5MB');
-      return;
-    }
-
-    onChangePhoto(file);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = typeof reader.result === 'string' ? reader.result : '';
-      setPreviewUrl(result);
-    };
-    reader.readAsDataURL(file);
   };
 
   const handleRemove = () => {
     onChangePhoto(null);
     setPreviewUrl('');
+    setError('');
   };
 
   return (
-    <div>
-      <div className={css.picker}>
-        {previewUrl && (
+    <div className={css.picker}>
+      <div className={css.avatarBox}>
+        {previewUrl ? (
           <Image
             src={previewUrl}
-            alt="Preview"
-            width={300}
-            height={300}
+            alt="Avatar preview"
+            width={72}
+            height={72}
             className={css.avatar}
           />
+        ) : (
+          <div className={css.stub}>📷</div>
         )}
+      </div>
 
-        <label
-          className={previewUrl ? `${css.wrapper} ${css.reload}` : css.wrapper}
-        >
-          📷 Choose photo
+      <div className={css.controls}>
+        <label className={css.fileLabel}>
+          <span className={css.icon}>📷</span>
+          <span>Choose photo</span>
           <input
             type="file"
             accept="image/*"
@@ -86,9 +91,13 @@ function AvatarPicker({ profilePhotoUrl, onChangePhoto }: AvatarPickerProps) {
         </label>
 
         {previewUrl && (
-          <button type="button" className={css.remove} onClick={handleRemove}>
-            ❌
-          </button>
+          <Button
+            type="button"
+            variant="delete"
+            text="Remove"
+            className={css.remove}
+            onClick={handleRemove}
+          />
         )}
       </div>
 

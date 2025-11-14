@@ -1,0 +1,31 @@
+.menuList {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-1);
+}
+
+.menuItem {
+  list-style: none;
+}
+
+.menuLink {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.menuLink:hover {
+  background: rgba(89, 195, 106, 0.1);
+  color: var(--text);
+}
+
+.active {
+  background: rgba(89, 195, 106, 0.2);
+  color: var(--accent);
+}

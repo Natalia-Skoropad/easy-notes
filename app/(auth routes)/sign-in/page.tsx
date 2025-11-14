@@ -2,11 +2,13 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import * as Yup from 'yup';
 
 import { login, type LoginRequest } from '@/lib/api/clientApi';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { useAuthStore } from '@/lib/store/authStore';
 import { ApiError } from '@/app/api/api';
+import { Button } from '@/app/components';
 
 import css from './page.module.css';
 
@@ -18,6 +20,7 @@ const signInSchema = Yup.object({
     .required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
+    .max(20, 'No more than 20 characters')
     .required('Password is required'),
 });
 
@@ -111,7 +114,7 @@ function SignIn() {
 
         <form className={css.form} onSubmit={handleSubmit} noValidate>
           <label className={css.label}>
-            <span>Email</span>
+            <span>Email*</span>
             <input
               className={`${css.input} ${errors.email ? css.inputError : ''}`}
               type="email"
@@ -126,7 +129,7 @@ function SignIn() {
           </label>
 
           <label className={css.label}>
-            <span>Password</span>
+            <span>Password*</span>
             <input
               className={`${css.input} ${
                 errors.password ? css.inputError : ''
@@ -142,18 +145,20 @@ function SignIn() {
             )}
           </label>
 
-          {authError && <p className={css.errorCommon}>{authError}</p>}
+          {authError && (
+            <p className={css.errorCommon}>
+              Incorrect email address or password.
+            </p>
+          )}
 
-          <button type="submit" className={css.submit}>
-            Log in
-          </button>
+          <Button type="submit" variant="normal" text="Log in" />
         </form>
 
         <p className={css.helper}>
           Don&apos;t have an account?{' '}
-          <a href="/sign-up" className={css.link}>
+          <Link href="/sign-up" className={css.link}>
             Create one
-          </a>
+          </Link>
         </p>
       </div>
     </section>

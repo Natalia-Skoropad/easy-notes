@@ -1,99 +1,189 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useId, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import * as Yup from 'yup';
+import { toast } from 'react-hot-toast';
 
-import { Category, createNote, NewNoteData } from '@/lib/api/clientApi';
-import { useNoteDraftStore } from '@/lib/stores/noteStore';
+import { createNote, type CreateNoteInput } from '@/lib/api/clientApi';
+import type { NoteTag } from '@/types/note';
+import { useNoteDraftStore } from '@/lib/store/noteStore';
 import { Button } from '@/app/components';
 
 import css from './NoteForm.module.css';
 
 //===========================================================================
 
+const TAGS: NoteTag[] = [
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+  'Todo',
+];
+
+type FieldErrors = Partial<Record<keyof CreateNoteInput, string>>;
+
 interface NoteFormProps {
-  categories: Category[];
+  tags: NoteTag[];
 }
 
 //===========================================================================
 
-function NoteForm({ categories }: NoteFormProps) {
-  const router = useRouter();
-  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+const schema = Yup.object({
+  title: Yup.string()
+    .trim()
+    .min(3, 'Title too short')
+    .max(50, 'Title too long')
+    .required('Title is required'),
+  content: Yup.string()
+    .trim()
+    .max(500, 'Content too long')
+    .required('Content is required'),
+  tag: Yup.mixed<NoteTag>().oneOf(TAGS, 'Invalid tag').required('Select tag'),
+});
 
-  const handleChange = (
+//===========================================================================
+
+function NoteForm({ tags }: NoteFormProps) {
+  const router = useRouter();
+  const fieldId = useId();
+  const queryClient = useQueryClient();
+
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+  const [errors, setErrors] = useState<FieldErrors>({});
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (data: CreateNoteInput) => createNote(data),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      clearDraft();
+      toast.success('Note created successfully');
+      router.back();
+    },
+
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Failed to create note';
+      toast.error(msg);
+    },
+  });
+
+  const validateField = async (
+    name: keyof CreateNoteInput,
+    next: CreateNoteInput
+  ) => {
+    try {
+      await schema.validateAt(name, next);
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    } catch (err) {
+      const msg =
+        err instanceof Yup.ValidationError ? err.message : 'Invalid value';
+      setErrors(prev => ({ ...prev, [name]: msg }));
+    }
+  };
+
+  const handleChange = async (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    setDraft({ ...draft, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    const next = { ...draft, [name]: value } as CreateNoteInput;
+    setDraft(next);
+    await validateField(name as keyof CreateNoteInput, next);
   };
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: NewNoteData) => createNote(data),
-    onSuccess: () => {
-      clearDraft();
-      router.push('/notes/filter/all');
-    },
-  });
-
-  const handleSubmit = (formData: FormData) => {
-    const values = Object.fromEntries(formData) as unknown as NewNoteData;
-    mutate(values);
+  const handleSubmit = async (formData: FormData) => {
+    const values = Object.fromEntries(formData) as unknown as CreateNoteInput;
+    try {
+      await schema.validate(values, { abortEarly: false });
+      await mutateAsync(values);
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const collected: FieldErrors = {};
+        for (const e of err.inner) {
+          if (e.path) collected[e.path as keyof CreateNoteInput] = e.message;
+        }
+        setErrors(collected);
+      }
+    }
   };
 
-  const handleCancel = () => router.push('/notes/filter/all');
+  const isFormValid = schema.isValidSync(draft);
+  const cancel = () => router.back();
 
   return (
-    <form className={css.form} action={handleSubmit}>
-      <label className={css.label}>
-        Title
+    <form className={css.form} action={handleSubmit} noValidate>
+      <div className={css.formGroup}>
+        <label htmlFor={`${fieldId}-title`}>Title*</label>
         <input
+          id={`${fieldId}-title`}
+          className={css.input}
           type="text"
           name="title"
-          defaultValue={draft?.title}
+          value={draft.title}
           onChange={handleChange}
           required
+          maxLength={50}
+          aria-invalid={!!errors.title}
         />
-      </label>
+        {errors.title && <span className={css.error}>{errors.title}</span>}
+      </div>
 
-      <label className={css.label}>
-        Content
+      <div className={css.formGroup}>
+        <label htmlFor={`${fieldId}-content`}>Content*</label>
         <textarea
+          id={`${fieldId}-content`}
+          className={css.textarea}
           name="content"
-          defaultValue={draft?.content}
+          value={draft.content}
           onChange={handleChange}
           required
+          rows={8}
+          maxLength={500}
+          aria-invalid={!!errors.content}
         />
-      </label>
+        {errors.content && <span className={css.error}>{errors.content}</span>}
+      </div>
 
-      <label className={css.label}>
-        Category
+      <div className={css.formGroup}>
+        <label htmlFor={`${fieldId}-tag`}>Tag*</label>
         <select
-          name="categoryId"
-          defaultValue={draft?.categoryId || ''}
+          id={`${fieldId}-tag`}
+          className={css.select}
+          name="tag"
+          value={draft.tag}
           onChange={handleChange}
           required
+          aria-invalid={!!errors.tag}
         >
           <option value="" disabled>
-            Choose category…
+            Choose tag…
           </option>
-          {categories.map(c => (
-            <option key={c.id} value={c.id}>
-              {c.name}
+          {tags.map(tag => (
+            <option key={tag} value={tag}>
+              {tag}
             </option>
           ))}
         </select>
-      </label>
+        {errors.tag && <span className={css.error}>{errors.tag}</span>}
+      </div>
 
       <div className={css.actions}>
-        <Button type="submit" text={isPending ? 'Creating…' : 'Create'} />
         <Button
-          type="button"
-          variant="cancel"
-          onClick={handleCancel}
-          text="Cancel"
+          type="submit"
+          text={isPending ? 'Creating…' : 'Create'}
+          disabled={isPending || !isFormValid}
         />
+
+        <Button type="button" variant="cancel" onClick={cancel} text="Cancel" />
       </div>
     </form>
   );

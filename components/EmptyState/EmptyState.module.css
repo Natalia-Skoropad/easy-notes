@@ -1,0 +1,20 @@
+.empty {
+  padding: 28px 20px;
+  border-radius: var(--radius-2);
+  border: 1px dashed var(--border);
+  background: color-mix(in oklab, var(--surface-1), #000 15%);
+  text-align: center;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.message {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}

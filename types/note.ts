@@ -1,14 +1,21 @@
+export type NoteTag =
+  | 'Work'
+  | 'Personal'
+  | 'Meeting'
+  | 'Shopping'
+  | 'Ideas'
+  | 'Travel'
+  | 'Finance'
+  | 'Health'
+  | 'Important'
+  | 'Todo';
+
 export interface Note {
   id: string;
   title: string;
   content: string;
-  categoryId: string;
-  userId: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface NoteListResponse {
-  notes: Note[];
-  total: number;
+  userId: string;
+  tag: NoteTag;
 }

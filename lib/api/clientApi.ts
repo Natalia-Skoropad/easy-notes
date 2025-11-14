@@ -1,53 +1,98 @@
 import { nextServer } from './api';
+import { type AxiosResponse } from 'axios';
+
 import type { User } from '@/types/user';
-import type { Note, NoteListResponse } from '@/types/note';
+import type { Note, NoteTag } from '@/types/note';
 
 //===========================================================================
 
-export type Category = {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
+export interface FetchNotesParams {
+  page?: number;
+  perPage?: number;
+  search?: string;
+  tag?: NoteTag;
+}
+
+export interface PagedNotes {
+  page: number;
+  perPage: number;
+  totalItems: number;
+  totalPages: number;
+  items: Note[];
+}
+
+type RawFetchNotesResponse = {
+  page: number;
+  perPage: number;
+  totalItems: number;
+  totalPages: number;
+  notes?: Note[];
+  results?: Note[];
+  items?: Note[];
+  data?: Note[];
 };
 
-export type NewNoteData = {
-  title: string;
-  content: string;
-  categoryId: string;
-};
+export type CreateNoteInput = Pick<Note, 'title' | 'content' | 'tag'>;
 
-// ---------------- NOTES & CATEGORIES ----------------
+// ---------------- NOTES ---------------------------------------------------
 
-export const getNotes = async (categoryId?: string) => {
-  const res = await nextServer.get<NoteListResponse>('/notes', {
-    params: { categoryId },
-  });
+export async function fetchNotes(
+  params: FetchNotesParams = {}
+): Promise<PagedNotes> {
+  const { page = 1, perPage = 12, search, tag } = params;
+
+  const q = (search ?? '').trim();
+  const queryParams: Record<string, unknown> = { page, perPage };
+
+  if (q.length >= 2) queryParams.search = q;
+  if (tag) queryParams.tag = tag;
+
+  const res: AxiosResponse<RawFetchNotesResponse> = await nextServer.get(
+    '/notes',
+    {
+      params: queryParams,
+    }
+  );
+
+  const data = res.data;
+  const items =
+    data.notes ?? data.results ?? data.items ?? data.data ?? ([] as Note[]);
+
+  return {
+    page: data.page ?? page,
+    perPage: data.perPage ?? perPage,
+    totalItems: data.totalItems ?? items.length,
+    totalPages:
+      data.totalPages ??
+      Math.max(
+        1,
+        Math.ceil((data.totalItems ?? items.length) / (data.perPage ?? perPage))
+      ),
+    items,
+  };
+}
+
+export async function fetchNoteById(id: string | number): Promise<Note> {
+  const res: AxiosResponse<Note> = await nextServer.get(`/notes/${id}`);
   return res.data;
-};
+}
 
-export const getSingleNote = async (id: string) => {
-  const res = await nextServer.get<Note>(`/notes/${id}`);
+export async function createNote(input: CreateNoteInput): Promise<Note> {
+  const res: AxiosResponse<Note> = await nextServer.post('/notes', input);
   return res.data;
-};
+}
 
-export const createNote = async (data: NewNoteData) => {
-  const res = await nextServer.post<Note>('/notes', data);
+export async function deleteNote(id: string): Promise<Note> {
+  const res: AxiosResponse<Note> = await nextServer.delete(`/notes/${id}`);
   return res.data;
-};
+}
 
-export const getCategories = async () => {
-  const res = await nextServer<Category[]>('/categories');
-  return res.data;
-};
-
-// ---------------- AUTH ----------------
+//===========================================================================
 
 export type RegisterRequest = {
   email: string;
+  username: string;
   password: string;
-  userName: string;
 };
 
 export type LoginRequest = {
@@ -60,9 +105,11 @@ type CheckSessionRequest = {
 };
 
 export type UpdateUserRequest = {
-  userName?: string;
-  photoUrl?: string;
+  username: string;
+  avatar?: string;
 };
+
+// ---------------- AUTH ---------------------------------------------------
 
 export const register = async (data: RegisterRequest) => {
   const res = await nextServer.post<User>('/auth/register', data);
@@ -74,28 +121,26 @@ export const login = async (data: LoginRequest) => {
   return res.data;
 };
 
+export const logout = async (): Promise<void> => {
+  await nextServer.post('/auth/logout');
+};
+
 export const checkSession = async () => {
   const res = await nextServer.get<CheckSessionRequest>('/auth/session');
   return res.data.success;
 };
 
-// ---------------- USER ----------------
+// ---------------- USERS --------------------------------------------------
 
 export const getMe = async () => {
-  const { data } = await nextServer.get<User>('/auth/me');
+  const { data } = await nextServer.get<User>('/users/me');
   return data;
 };
 
-export const logout = async (): Promise<void> => {
-  await nextServer.post('/auth/logout');
-};
-
 export const updateMe = async (payload: UpdateUserRequest) => {
-  const res = await nextServer.put<User>('/auth/me', payload);
+  const res = await nextServer.patch<User>('/users/me', payload);
   return res.data;
 };
-
-// ---------------- UPLOAD ----------------
 
 export const uploadImage = async (file: File): Promise<string> => {
   const formData = new FormData();

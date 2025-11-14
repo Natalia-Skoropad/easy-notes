@@ -1,22 +1,41 @@
-.wrap {
-  display: grid;
-  gap: 12px;
+.container {
+  padding-block: 32px;
+}
+
+.item {
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 20px;
+  padding: 20px 18px 16px;
   box-shadow: var(--shadow-1);
+  display: grid;
+  gap: 10px;
 }
 
-.title {
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.content {
   margin: 0;
-}
-
-.body {
-  opacity: 0.95;
-}
-
-.meta {
-  color: var(--muted);
   font-size: 14px;
+}
+
+.date {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.isLoading,
+.isError {
+  padding-block: 32px;
+  font-size: 14px;
+}
+
+.isError {
+  color: var(--danger);
 }

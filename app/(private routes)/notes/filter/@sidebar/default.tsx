@@ -1,34 +1,62 @@
-import { getCategories } from '@/lib/api/clientApi';
-import { LinkButton } from '@/app/components';
-import Link from 'next/link';
+'use client';
 
-import css from '../notes.module.css';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import type { NoteTag } from '@/types/note';
+
+import clsx from 'clsx';
+import css from './SidebarNotes.module.css';
 
 //===========================================================================
 
-async function NotesSidebar() {
-  const categories = await getCategories();
+const TAGS: NoteTag[] = [
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+  'Todo',
+];
+
+//===========================================================================
+
+function NotesSidebar() {
+  const pathname = usePathname();
+
+  const raw = pathname?.replace('/notes/filter', '').replace(/^\//, '') || '';
+  const current = decodeURIComponent(raw || 'all');
+
+  const linkClass = (value: string) =>
+    clsx(
+      css.menuLink,
+      (current === 'all' && value === 'all') || current === value
+        ? css.active
+        : undefined
+    );
 
   return (
-    <>
-      <LinkButton href="/notes/action/create" text="Create note" block />
+    <ul className={css.menuList}>
+      <li className={css.menuItem}>
+        <Link href="/notes/filter/all" className={linkClass('all')}>
+          All notes
+        </Link>
+      </li>
 
-      <ul className={css.catList}>
-        <li>
-          <Link className={css.link} href={`/notes/filter/all`}>
-            All notes
+      {TAGS.map(tag => (
+        <li key={tag} className={css.menuItem}>
+          <Link
+            href={`/notes/filter/${encodeURIComponent(tag)}`}
+            className={linkClass(tag)}
+          >
+            {tag}
           </Link>
         </li>
-
-        {categories.map(category => (
-          <li key={category.id}>
-            <Link className={css.link} href={`/notes/filter/${category.id}`}>
-              {category.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </>
+      ))}
+    </ul>
   );
 }
 

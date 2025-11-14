@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { parse } from 'cookie';
-import { checkServerSession } from './lib/api/serverApi';
+import { checkSession } from './lib/api/serverApi';
 
 //===========================================================================
 
@@ -12,6 +12,7 @@ const publicRoutes = ['/sign-in', '/sign-up'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
   const cookieStore = await cookies();
   const accessToken = cookieStore.get('accessToken')?.value;
   const refreshToken = cookieStore.get('refreshToken')?.value;
@@ -23,7 +24,7 @@ export async function middleware(request: NextRequest) {
 
   if (!accessToken) {
     if (refreshToken) {
-      const data = await checkServerSession();
+      const data = await checkSession();
       const setCookie = data.headers['set-cookie'];
 
       if (setCookie) {
@@ -48,7 +49,6 @@ export async function middleware(request: NextRequest) {
             },
           });
         }
-
         if (isPrivateRoute) {
           return NextResponse.next({
             headers: {
@@ -62,7 +62,6 @@ export async function middleware(request: NextRequest) {
     if (isPublicRoute) {
       return NextResponse.next();
     }
-
     if (isPrivateRoute) {
       return NextResponse.redirect(new URL('/sign-in', request.url));
     }
@@ -71,10 +70,10 @@ export async function middleware(request: NextRequest) {
   if (isPublicRoute) {
     return NextResponse.redirect(new URL('/', request.url));
   }
-
   if (isPrivateRoute) {
     return NextResponse.next();
   }
+  return NextResponse.next();
 }
 
 //===========================================================================

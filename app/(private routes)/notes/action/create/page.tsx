@@ -1,15 +1,33 @@
-import { getCategories } from '@/lib/api/clientApi';
+import type { NoteTag } from '@/types/note';
 import { NoteForm } from '@/app/components';
+
+import css from './CreateNote.module.css';
 
 //===========================================================================
 
-async function CreateNote() {
-  const categories = await getCategories();
+const TAGS: NoteTag[] = [
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+  'Todo',
+];
 
+// ================================================================
+
+async function CreateNote() {
   return (
-    <>
-      <NoteForm categories={categories} />
-    </>
+    <main className={css.main}>
+      <div className={css.container}>
+        <h1 className={css.title}>Create note</h1>
+        <NoteForm tags={TAGS} />
+      </div>
+    </main>
   );
 }
 

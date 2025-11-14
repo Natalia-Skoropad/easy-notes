@@ -1,16 +1,23 @@
 .form {
   display: grid;
   gap: 16px;
+  width: 100%;
   max-width: 720px;
 }
 
-.label {
+.formGroup {
   display: grid;
-  gap: 8px;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.label {
   font-weight: 600;
 }
 
-.form :where(input, textarea, select) {
+.input,
+.textarea,
+.select {
   background: var(--surface-2);
   color: var(--text);
   border: 1px solid var(--border);
@@ -18,9 +25,26 @@
   padding: 10px 12px;
 }
 
-.form :where(textarea) {
+.textarea {
   min-height: 160px;
   resize: vertical;
+}
+
+.select {
+  cursor: pointer;
+}
+
+.input:focus-visible,
+.textarea:focus-visible,
+.select:focus-visible {
+  outline: 1px solid var(--accent);
+  box-shadow: 0 0 0 1px rgba(89, 195, 106, 0.3);
+}
+
+.error {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--danger);
 }
 
 .actions {
@@ -28,4 +52,10 @@
   gap: 12px;
   justify-content: flex-end;
   margin-top: 8px;
+}
+
+@media (min-width: 768px) {
+  .form {
+    gap: 18px;
+  }
 }

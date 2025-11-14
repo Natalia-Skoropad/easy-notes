@@ -1,16 +1,32 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp, User } from 'lucide-react';
+import Link from 'next/link';
 
-import { useAuthStore } from '@/lib/stores/authStore';
-import { logout, getCategories, type Category } from '@/lib/api/clientApi';
+import type { NoteTag } from '@/types/note';
+import { useAuthStore } from '@/lib/store/authStore';
+import { logout } from '@/lib/api/clientApi';
 import { Button } from '@/app/components';
 
 import Image from 'next/image';
 import css from '../Header/Header.module.css';
+
+//===========================================================================
+
+const TAGS: NoteTag[] = [
+  'Work',
+  'Personal',
+  'Meeting',
+  'Shopping',
+  'Ideas',
+  'Travel',
+  'Finance',
+  'Health',
+  'Important',
+  'Todo',
+];
 
 //===========================================================================
 
@@ -24,18 +40,6 @@ function AuthNavigation() {
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isGuestProfileOpen, setIsGuestProfileOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setCategories([]);
-      return;
-    }
-
-    getCategories()
-      .then(data => setCategories(data))
-      .catch(() => setCategories([]));
-  }, [isAuthenticated]);
 
   const closeAll = () => {
     setIsNotesOpen(false);
@@ -128,14 +132,14 @@ function AuthNavigation() {
               All notes
             </Link>
 
-            {categories.map(category => (
+            {TAGS.map(tag => (
               <Link
-                key={category.id}
-                href={`/notes/filter/${category.id}`}
+                key={tag}
+                href={`/notes/filter/${encodeURIComponent(tag)}`}
                 className={css.dropdownLink}
                 onClick={closeAll}
               >
-                {category.name}
+                {tag}
               </Link>
             ))}
           </div>
@@ -154,18 +158,20 @@ function AuthNavigation() {
           onClick={() => setIsProfileOpen(prev => !prev)}
         >
           <span className={css.avatarStub}>
-            {user?.photoUrl ? (
+            {user?.avatar ? (
               <Image
-                src={user.photoUrl}
-                alt={user.userName || 'Profile photo'}
+                src={user.avatar}
+                alt={user.username || 'Profile photo'}
                 className={css.avatar}
+                width={11}
+                height={11}
               />
             ) : (
               <User size={11} />
             )}
           </span>
 
-          <span>{user?.userName || 'Profile'}</span>
+          <span>{user?.username || 'Profile'}</span>
 
           {isProfileOpen ? (
             <ChevronUp size={14} className={css.chevron} />

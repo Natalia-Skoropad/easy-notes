@@ -1,8 +1,10 @@
-import axios from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
 //===========================================================================
 
-export const nextServer = axios.create({
-  baseURL: 'http://localhost:3000/api',
+const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+
+export const nextServer: AxiosInstance = axios.create({
+  baseURL: BASE_URL,
   withCredentials: true,
 });

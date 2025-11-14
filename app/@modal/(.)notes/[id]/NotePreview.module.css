@@ -1,0 +1,87 @@
+.container {
+  display: grid;
+  gap: 16px;
+}
+
+.modalLoading {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 24px 6px 6px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.item {
+  padding: 16px 14px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-1);
+  display: grid;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.content {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.date {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tag {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(89, 195, 106, 0.4);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(20, 26, 36, 1);
+}
+
+.action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.isLoading,
+.isError {
+  margin: 0;
+  font-size: 14px;
+}
+
+.isError {
+  color: var(--danger);
+}
