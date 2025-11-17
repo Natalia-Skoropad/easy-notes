@@ -91,7 +91,6 @@ export async function deleteNote(id: string): Promise<Note> {
 
 export type RegisterRequest = {
   email: string;
-  username: string;
   password: string;
 };
 

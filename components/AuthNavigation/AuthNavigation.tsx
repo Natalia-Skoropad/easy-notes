@@ -9,6 +9,7 @@ import type { NoteTag } from '@/types/note';
 import { useAuthStore } from '@/lib/store/authStore';
 import { logout } from '@/lib/api/clientApi';
 import { Button } from '@/app/components';
+import { useNotesStats } from '@/hooks/useNotesStats';
 
 import css from '../Header/Header.module.css';
 
@@ -27,6 +28,34 @@ const TAGS: NoteTag[] = [
   'Todo',
 ];
 
+// маленький хелпер, щоб підбирати кольоровий клас для тегу
+const getTagBadgeClass = (tag: NoteTag) => {
+  switch (tag) {
+    case 'Work':
+      return css.badgeWork;
+    case 'Personal':
+      return css.badgePersonal;
+    case 'Meeting':
+      return css.badgeMeeting;
+    case 'Shopping':
+      return css.badgeShopping;
+    case 'Ideas':
+      return css.badgeIdeas;
+    case 'Travel':
+      return css.badgeTravel;
+    case 'Finance':
+      return css.badgeFinance;
+    case 'Health':
+      return css.badgeHealth;
+    case 'Important':
+      return css.badgeImportant;
+    case 'Todo':
+      return css.badgeTodo;
+    default:
+      return '';
+  }
+};
+
 //===========================================================================
 
 function AuthNavigation() {
@@ -39,6 +68,8 @@ function AuthNavigation() {
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isGuestProfileOpen, setIsGuestProfileOpen] = useState(false);
+
+  const { data: stats } = useNotesStats(isAuthenticated);
 
   const closeAll = () => {
     setIsNotesOpen(false);
@@ -54,6 +85,8 @@ function AuthNavigation() {
       router.push('/sign-in');
     }
   };
+
+  // -------- guest menu ----------------------------------------------------
 
   if (!isAuthenticated) {
     return (
@@ -100,6 +133,8 @@ function AuthNavigation() {
     );
   }
 
+  // -------- auth menu -----------------------------------------------------
+
   return (
     <>
       {/* Notes dropdown */}
@@ -128,7 +163,12 @@ function AuthNavigation() {
               className={css.dropdownLink}
               onClick={closeAll}
             >
-              All notes
+              <span>All notes</span>
+              {stats && stats.total > 0 && (
+                <span className={`${css.badge} ${css.badgeTotal}`}>
+                  {stats.total}
+                </span>
+              )}
             </Link>
 
             {TAGS.map(tag => (
@@ -138,7 +178,12 @@ function AuthNavigation() {
                 className={css.dropdownLink}
                 onClick={closeAll}
               >
-                {tag}
+                <span>{tag}</span>
+                {stats && stats.byTag[tag] > 0 && (
+                  <span className={`${css.badge} ${getTagBadgeClass(tag)}`}>
+                    {stats.byTag[tag]}
+                  </span>
+                )}
               </Link>
             ))}
           </div>

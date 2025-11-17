@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import * as Yup from 'yup';
 
-import { register, type RegisterRequest } from '@/lib/api/clientApi';
+import { register, updateMe, type RegisterRequest } from '@/lib/api/clientApi';
 import { useAuthStore } from '@/lib/store/authStore';
 import { ApiError } from '@/app/api/api';
 import { Button } from '@/app/components';
@@ -16,26 +16,30 @@ import css from './page.module.css';
 
 const signUpSchema = Yup.object({
   username: Yup.string()
+    .transform(value => ((value ?? '').trim() === '' ? undefined : value))
     .min(2, 'Username must be at least 2 characters')
     .max(20, 'No more than 20 characters')
-    .required('Username is required'),
+    .notRequired(),
   email: Yup.string()
     .email('Enter a valid email.')
     .required('Email is required'),
-
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .max(20, 'No more than 20 characters')
     .required('Password is required'),
 });
 
-type SignUpForm = RegisterRequest;
+type SignUpForm = {
+  username?: string;
+  email: string;
+  password: string;
+};
 
 //===========================================================================
 
 function SignUp() {
   const router = useRouter();
-  const setUser = useAuthStore(state => state.setUser);
+  const setUser = useAuthStore(s => s.setUser);
 
   const [values, setValues] = useState<SignUpForm>({
     username: '',
@@ -65,7 +69,6 @@ function SignUp() {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const field = name as keyof SignUpForm;
-
     setValues(prev => ({ ...prev, [field]: value }));
     setAuthError('');
     void validateField(field, value);
@@ -76,34 +79,50 @@ function SignUp() {
     setAuthError('');
 
     try {
-      const validData = (await signUpSchema.validate(values, {
+      const valid = (await signUpSchema.validate(values, {
         abortEarly: false,
       })) as SignUpForm;
 
       setErrors({});
 
-      const user = await register(validData);
+      const payload: RegisterRequest = {
+        email: valid.email,
+        password: valid.password,
+      };
 
-      if (user) {
-        setUser(user);
-        router.push('/profile');
-      } else {
-        setAuthError('Unable to register. Please try again.');
+      const user = await register(payload);
+      setUser(user);
+
+      if (valid.username) {
+        try {
+          const updated = await updateMe({ username: valid.username });
+          setUser(updated);
+        } catch (updateErr) {
+          console.error('Failed to update username', updateErr);
+        }
       }
+
+      router.push('/profile');
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const fieldErrors: Partial<Record<keyof SignUpForm, string>> = {};
+
         err.inner.forEach(issue => {
           const path = issue.path as keyof SignUpForm | undefined;
-          if (path && !fieldErrors[path]) {
-            fieldErrors[path] = issue.message;
-          }
+          if (path && !fieldErrors[path]) fieldErrors[path] = issue.message;
         });
+
         setErrors(fieldErrors);
         return;
       }
 
       const apiErr = err as ApiError;
+
+      if (apiErr.response?.status === 409) {
+        setAuthError('This email is already registered.');
+        return;
+      }
+
       setAuthError(
         apiErr.response?.data?.error ??
           apiErr.message ??
@@ -122,7 +141,7 @@ function SignUp() {
 
         <form className={css.form} onSubmit={handleSubmit} noValidate>
           <label className={css.label}>
-            <span>Username*</span>
+            <span>Username</span>
             <input
               className={`${css.input} ${
                 errors.username ? css.inputError : ''

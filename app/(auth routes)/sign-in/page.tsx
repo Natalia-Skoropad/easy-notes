@@ -16,7 +16,7 @@ import css from './page.module.css';
 
 const signInSchema = Yup.object({
   email: Yup.string()
-    .email('Enter a valid email.')
+    .email('Enter a valid email')
     .required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
@@ -147,7 +147,7 @@ function SignIn() {
 
           {authError && (
             <p className={css.errorCommon}>
-              Incorrect email address or password.
+              Incorrect email address or password
             </p>
           )}
 

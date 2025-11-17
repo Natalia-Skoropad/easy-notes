@@ -40,15 +40,16 @@ function RootLayout({
         <TanStackProvider>
           <AuthProvider>
             <Header />
+            <div className="container">
+              <main className={css.main}>
+                <div className={css.container}>
+                  {children}
+                  {modal}
+                </div>
+              </main>
 
-            <main className={css.main}>
-              <div className={css.container}>
-                {children}
-                {modal}
-              </div>
-            </main>
-
-            <Footer />
+              <Footer />
+            </div>
           </AuthProvider>
         </TanStackProvider>
       </body>

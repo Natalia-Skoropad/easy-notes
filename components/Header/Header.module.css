@@ -2,16 +2,19 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  padding: 10px 32px;
+  padding: 10px 16px;
   backdrop-filter: blur(10px);
   background: rgba(10, 12, 18, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
+/* layout */
+
 .nav {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 }
 
 .logo {
@@ -21,13 +24,43 @@
   text-decoration: none;
 }
 
-.list {
-  display: flex;
+/* -------------------------------------------------
+   Mobile: burger + offcanvas
+-------------------------------------------------- */
+
+.menuToggle {
+  margin-left: auto;
+  display: inline-flex;
   align-items: center;
-  gap: 28px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 26, 36, 0.98);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease, transform 0.06s ease;
+}
+
+.menuToggle:hover {
+  background: rgba(35, 46, 63, 1);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.menuToggle:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.menuIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.list {
+  display: none;
 }
 
 /* base links */
@@ -60,7 +93,147 @@
   width: 100%;
 }
 
-/* profile dropdown */
+/* -------------------------------------------------
+   Offcanvas styles
+-------------------------------------------------- */
+
+.offcanvasBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 10, 0.7);
+  z-index: 50;
+}
+
+.offcanvas {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  width: min(320px, 80vw);
+  background: radial-gradient(
+      260px 260px at 0 0,
+      rgba(89, 195, 106, 0.16),
+      transparent
+    ),
+    var(--surface-1);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-2);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px 20px;
+  animation: slideIn 0.22s ease-out both;
+}
+
+.offcanvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 26, 36, 0.98);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease, transform 0.06s ease;
+}
+
+.closeBtn:hover {
+  background: rgba(35, 46, 63, 1);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.closeBtn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.offcanvasNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.offcanvasLink {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.06s ease;
+}
+
+.offcanvasLink:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.22),
+    rgba(89, 195, 106, 0.08)
+  );
+  border-color: color-mix(in oklab, var(--accent), #000 55%);
+  box-shadow: var(--shadow-1);
+}
+
+.offcanvasLink:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.offcanvasHeader .logo {
+  font-size: 18px;
+}
+
+/* slide animation */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* -------------------------------------------------
+   Desktop breakpoint
+-------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .header {
+    padding-inline: 32px;
+  }
+
+  .menuToggle {
+    display: none;
+  }
+
+  .list {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* -------------------------------------------------
+   Profile dropdown (desktop)
+-------------------------------------------------- */
 
 .profileWrapper {
   position: relative;
@@ -77,7 +250,7 @@
   color: var(--text);
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .profileBtn:hover {
@@ -184,4 +357,155 @@
 .logout {
   font-size: 14px;
   font-weight: 400;
+}
+
+.offcanvasBackdrop {
+  position: fixed;
+  inset: 0;
+  min-height: 100vh;
+  background: rgba(4, 6, 10, 0.7);
+  z-index: 50;
+}
+
+.offcanvasButton {
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.offcanvasLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.06s ease, color 0.18s ease;
+}
+
+.offcanvasLink:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.22),
+    rgba(89, 195, 106, 0.08)
+  );
+  border-color: color-mix(in oklab, var(--accent), #000 55%);
+  box-shadow: var(--shadow-1);
+}
+
+.offcanvasLinkActive {
+  border-color: var(--accent);
+  background: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.28),
+    rgba(89, 195, 106, 0.12)
+  );
+  color: var(--accent);
+}
+
+.badge {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(89, 195, 106, 0.18);
+  border: 1px solid color-mix(in oklab, var(--accent), #000 40%);
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.offcanvasHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.offcanvasBrand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.offcanvasHeader .logo {
+  font-size: 18px;
+}
+
+.offcanvasGreeting {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.badge {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  margin-left: auto;
+
+  background: rgba(89, 195, 106, 0.18);
+  border: 1px solid color-mix(in oklab, var(--accent), #000 40%);
+}
+
+.badgeTotal {
+  background: rgba(89, 195, 106, 0.26);
+}
+
+.badgeWork {
+  background: rgba(89, 195, 106, 0.22);
+}
+
+.badgePersonal {
+  background: rgba(108, 99, 255, 0.2);
+  border-color: color-mix(in oklab, #6c63ff, #000 45%);
+}
+
+.badgeMeeting {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: color-mix(in oklab, #38bdf8, #000 40%);
+}
+
+.badgeShopping {
+  background: rgba(203, 175, 135, 0.24);
+  border-color: color-mix(in oklab, #cbaf87, #000 40%);
+}
+
+.badgeIdeas {
+  background: rgba(147, 112, 246, 0.22);
+  border-color: color-mix(in oklab, #a855f7, #000 40%);
+}
+
+.badgeTravel {
+  background: rgba(45, 212, 191, 0.2);
+  border-color: color-mix(in oklab, #14b8a6, #000 40%);
+}
+
+.badgeFinance {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: color-mix(in oklab, #16a34a, #000 40%);
+}
+
+.badgeHealth {
+  background: rgba(74, 222, 128, 0.22);
+  border-color: color-mix(in oklab, #22c55e, #000 40%);
+}
+
+.badgeImportant {
+  background: rgba(248, 113, 113, 0.22);
+  border-color: color-mix(in oklab, #ef4444, #000 35%);
+}
+
+.badgeTodo {
+  background: rgba(148, 163, 184, 0.22);
+  border-color: color-mix(in oklab, #94a3b8, #000 40%);
 }

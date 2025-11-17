@@ -81,6 +81,7 @@
 .errorCommon {
   min-height: 16px;
   margin: 0;
+  margin-bottom: 10px;
   font-size: 13px;
   color: var(--danger);
 }
