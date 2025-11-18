@@ -8,8 +8,10 @@
 
 .offcanvas {
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
+  bottom: 0;
+
   width: min(320px, 80vw);
   background: radial-gradient(
       260px 260px at 0 0,

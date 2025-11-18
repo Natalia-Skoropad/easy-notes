@@ -8,8 +8,8 @@ import {
   AuthProvider,
 } from '@/app/components';
 
-import css from './layout.module.css';
 import './globals.css';
+import css from './layout.module.css';
 
 //===========================================================================
 
@@ -78,7 +78,6 @@ function RootLayout({
                   {modal}
                 </div>
               </main>
-
               <Footer />
             </div>
           </AuthProvider>

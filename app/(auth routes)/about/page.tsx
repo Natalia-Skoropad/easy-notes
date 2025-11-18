@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Breadcrumbs } from '@/app/components';
+
 import css from './about.module.css';
 
 //===========================================================================

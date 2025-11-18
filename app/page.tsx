@@ -1,5 +1,43 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
+
 import css from './home.module.css';
+
+//===========================================================================
+
+const SITE_URL = 'https://easy-notes-ten.vercel.app';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: 'EasyNotes | Simple notes app',
+  description:
+    'Create, search and manage personal notes with tags, filters and previews.',
+
+  openGraph: {
+    title: 'EasyNotes | Simple notes app',
+    description:
+      'Create, search and manage personal notes with tags, filters and previews.',
+    url: SITE_URL,
+    siteName: 'EasyNotes',
+    images: [
+      {
+        url: '/note-og-meta.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'EasyNotes',
+      },
+    ],
+    type: 'website',
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EasyNotes | Simple notes app',
+    description:
+      'Create, search and manage personal notes with tags, filters and previews.',
+    images: ['/note-og-meta.jpg'],
+  },
+};
 
 //===========================================================================
 
@@ -50,7 +88,9 @@ function Home() {
             <span className={css.dot} />
             <div>
               <h2>Modern stack</h2>
-              <p>Next.js App Router, SSR + CSR, TanStack Query & Zustand.</p>
+              <p>
+                Next.js App Router, SSR + CSR, TanStack Query &amp; Zustand.
+              </p>
             </div>
           </div>
         </div>
