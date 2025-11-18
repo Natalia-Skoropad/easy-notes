@@ -1,11 +1,16 @@
 .section {
-  padding-block: 40px;
-  display: flex;
-  justify-content: center;
+  padding-block: 20px 50px;
+  display: block;
+}
+
+.breadcrumbs {
+  margin-bottom: 16px;
 }
 
 .card {
-  width: min(760px, 100%);
+  width: min(600px, 100%);
+  margin-inline: auto;
+
   padding: 24px 22px 20px;
   border-radius: var(--radius-3);
   border: 1px solid var(--border);
@@ -125,7 +130,9 @@
   font-weight: 500;
 }
 
-@media (max-width: 640px) {
+/* mobile */
+
+@media (max-width: 768px) {
   .card {
     padding: 18px 14px 16px;
     gap: 14px;

@@ -1,7 +1,45 @@
-import { LinkButton } from '@/app/components';
+import type { Metadata } from 'next';
+
+import { LinkButton, Breadcrumbs } from '@/app/components';
 import { getMe } from '@/lib/api/serverApi';
 
 import css from './profile.module.css';
+
+//===========================================================================
+
+const SITE_URL = 'https://easy-notes-ten.vercel.app';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: 'Profile details | EasyNotes',
+  description:
+    'User profile: avatar, username and email. Manage your EasyNotes account.',
+
+  openGraph: {
+    title: 'Profile details | EasyNotes',
+    description:
+      'User profile: avatar, username and email. Manage your EasyNotes account.',
+    url: `${SITE_URL}/profile`,
+    siteName: 'EasyNotes',
+    images: [
+      {
+        url: '/note-og-meta.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'EasyNotes',
+      },
+    ],
+    type: 'profile',
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Profile details | EasyNotes',
+    description:
+      'User profile: avatar, username and email. Manage your EasyNotes account.',
+    images: ['/note-og-meta.jpg'],
+  },
+};
 
 //===========================================================================
 
@@ -18,12 +56,25 @@ async function Profile() {
 
   return (
     <section className={css.section}>
+      <div className={css.breadcrumbs}>
+        <Breadcrumbs
+          items={[
+            {
+              label: 'Home',
+              href: '/',
+            },
+            { label: 'Profile details' },
+          ]}
+        />
+      </div>
+
       <div className={css.card}>
         <div className={css.topRow}>
           {/* Avatar */}
           <div className={css.avatarWrap}>
             <div className={css.avatarStub}>{initials}</div>
           </div>
+
           {/* Heading */}
           <div>
             <div className={css.badge}>Account overview</div>
@@ -38,7 +89,7 @@ async function Profile() {
           <div className={css.actions}>
             <LinkButton
               href="/profile/edit"
-              text="Edit profile"
+              text="Profile Edit"
               variant="normal"
             />
           </div>

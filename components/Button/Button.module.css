@@ -56,3 +56,22 @@
   );
   --btn-border: color-mix(in oklab, var(--accent-2), #000 60%);
 }
+
+/* -------------------------------------------------
+   Disabled state
+-------------------------------------------------- */
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.button:disabled:hover,
+.button:disabled:active {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}

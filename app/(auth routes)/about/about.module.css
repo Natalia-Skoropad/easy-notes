@@ -8,14 +8,18 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid rgba(89, 195, 106, 0.4);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
   background: rgba(20, 26, 36, 1);
+  margin-bottom: 6px;
+
+  width: fit-content;
+  align-self: flex-start;
 }
 
 .title {

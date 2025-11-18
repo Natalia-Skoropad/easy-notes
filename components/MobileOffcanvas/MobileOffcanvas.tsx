@@ -128,7 +128,15 @@ function MobileOffcanvas({ isOpen, onClose }: MobileOffcanvasProps) {
                 className={linkClass('/profile')}
                 onClick={onClose}
               >
-                Profile
+                Profile Details
+              </Link>
+
+              <Link
+                href="/profile"
+                className={linkClass('/profile/edit')}
+                onClick={onClose}
+              >
+                Profile Edit
               </Link>
 
               <Link

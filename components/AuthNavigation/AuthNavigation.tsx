@@ -135,7 +135,7 @@ function AuthNavigation() {
               className={dropdownLinkClass('/profile/edit')}
               onClick={closeAll}
             >
-              Settings
+              Edit
             </Link>
 
             <div className={css.dropdownDivider} />
