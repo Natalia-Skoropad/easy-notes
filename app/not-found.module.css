@@ -1,19 +1,98 @@
 .container {
   min-height: calc(100vh - 140px);
-  display: grid;
-  place-items: center;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-block: 40px;
 }
 
+.card {
+  max-width: 520px;
+  width: 100%;
+  padding: 32px 26px 28px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: radial-gradient(
+      260px 260px at 0 0,
+      rgba(89, 195, 106, 0.16),
+      transparent
+    ),
+    var(--surface-1);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+  display: grid;
+  gap: 14px;
+}
+
+.code {
+  margin: 0;
+  font-size: clamp(42px, 7vw, 54px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 .title {
-  margin: 0 0 10px;
-  font-size: clamp(26px, 3vw, 32px);
+  margin: 0;
+  font-size: clamp(22px, 3vw, 28px);
 }
 
 .description {
-  margin: 0;
+  margin: 0 auto;
   max-width: 420px;
   font-size: 14px;
   color: var(--muted);
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.primaryLink,
+.secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.06s ease;
+}
+
+.primaryLink {
+  border: 1px solid color-mix(in oklab, var(--accent), #000 40%);
+  background: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.32),
+    rgba(89, 195, 106, 0.12)
+  );
+  color: var(--text);
+  box-shadow: var(--shadow-1);
+}
+
+.primaryLink:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(89, 195, 106, 0.4),
+    rgba(89, 195, 106, 0.18)
+  );
+  transform: translateY(-1px);
+}
+
+.secondaryLink {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 26, 36, 0.98);
+  color: var(--muted);
+}
+
+.secondaryLink:hover {
+  background: rgba(35, 46, 63, 1);
+  color: var(--text);
 }

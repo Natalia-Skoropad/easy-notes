@@ -1,5 +1,5 @@
 .section {
-  padding-block: 40px 50px;
+  padding-block: 20px 50px;
   display: grid;
   gap: 18px;
 }

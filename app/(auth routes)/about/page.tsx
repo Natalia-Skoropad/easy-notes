@@ -1,10 +1,41 @@
+import type { Metadata } from 'next';
+import { Breadcrumbs } from '@/app/components';
 import css from './about.module.css';
 
 //===========================================================================
 
-export const metadata = {
-  title: 'About - Easy Notes',
-  description: 'Learn more about the Easy Notes application.',
+const SITE_URL = 'https://easy-notes-ten.vercel.app';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: 'About | EasyNotes',
+  description:
+    'Learn more about EasyNotes — a simple notes app with tags, filters and previews.',
+
+  openGraph: {
+    title: 'About | EasyNotes',
+    description:
+      'Learn more about EasyNotes — a simple notes app with tags, filters and previews.',
+    url: `${SITE_URL}/about`,
+    siteName: 'EasyNotes',
+    images: [
+      {
+        url: '/note-og-meta.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'EasyNotes',
+      },
+    ],
+    type: 'website',
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About | EasyNotes',
+    description:
+      'Learn more about EasyNotes — a simple notes app with tags, filters and previews.',
+    images: ['/note-og-meta.jpg'],
+  },
 };
 
 //===========================================================================
@@ -12,6 +43,17 @@ export const metadata = {
 function AboutPage() {
   return (
     <section className={css.section}>
+      <Breadcrumbs
+        items={[
+          {
+            label: 'Home',
+            href: '/',
+          },
+
+          { label: 'About' },
+        ]}
+      />
+
       <div className={css.badge}>About Easy Notes</div>
 
       <h1 className={css.title}>A focused space for your notes</h1>

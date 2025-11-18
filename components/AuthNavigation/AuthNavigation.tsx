@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { ChevronDown, ChevronUp, User } from 'lucide-react';
 import Link from 'next/link';
 
@@ -9,12 +9,14 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { logout } from '@/lib/api/clientApi';
 import { Button, CategoriesMenu } from '@/app/components';
 
+import clsx from 'clsx';
 import css from './AuthNavigation.module.css';
 
 //===========================================================================
 
 function AuthNavigation() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const isAuthenticated = useAuthStore(s => s.isAuthenticated);
   const user = useAuthStore(s => s.user);
@@ -36,6 +38,9 @@ function AuthNavigation() {
       router.push('/sign-in');
     }
   };
+
+  const dropdownLinkClass = (href: string) =>
+    clsx(css.dropdownLink, pathname === href && css.dropdownLinkActive);
 
   // -------- guest menu ----------------------------------------------------
 
@@ -66,17 +71,17 @@ function AuthNavigation() {
           <div className={css.dropdown}>
             <Link
               href="/sign-in"
-              className={css.dropdownLink}
+              className={dropdownLinkClass('/sign-in')}
               onClick={closeAll}
             >
-              Login
+              Sign In
             </Link>
             <Link
               href="/sign-up"
-              className={css.dropdownLink}
+              className={dropdownLinkClass('/sign-up')}
               onClick={closeAll}
             >
-              Register
+              Sign Up
             </Link>
           </div>
         )}
@@ -119,7 +124,7 @@ function AuthNavigation() {
           <div className={css.dropdown}>
             <Link
               href="/profile"
-              className={css.dropdownLink}
+              className={dropdownLinkClass('/profile')}
               onClick={closeAll}
             >
               Details
@@ -127,7 +132,7 @@ function AuthNavigation() {
 
             <Link
               href="/profile/edit"
-              className={css.dropdownLink}
+              className={dropdownLinkClass('/profile/edit')}
               onClick={closeAll}
             >
               Settings

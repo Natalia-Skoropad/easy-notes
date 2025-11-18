@@ -96,3 +96,9 @@
     transform: translateY(0);
   }
 }
+
+.dropdownLinkActive {
+  background: rgba(89, 195, 106, 0.18);
+  color: var(--accent);
+  text-underline-offset: 3px;
+}

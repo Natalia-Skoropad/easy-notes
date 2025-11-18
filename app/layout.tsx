@@ -26,19 +26,19 @@ const SITE_URL = 'https://easy-notes-ten.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'EasyNotes — simple notes app',
+  title: 'EasyNotes | Simple notes app',
   description:
     'Create, search and manage personal notes with tags, filters and previews.',
 
   openGraph: {
-    title: 'EasyNotes — simple notes app',
+    title: 'EasyNotes | Simple notes app',
     description:
       'Create, search and manage personal notes with tags, filters and previews.',
     url: SITE_URL,
     siteName: 'EasyNotes',
     images: [
       {
-        url: '/public/note-og-meta.jpg',
+        url: '/note-og-meta.jpg',
         width: 1200,
         height: 630,
         alt: 'EasyNotes',
@@ -49,10 +49,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'EasyNotes — simple notes app',
+    title: 'EasyNotes | Simple notes app',
     description:
       'Create, search and manage personal notes with tags, filters and previews.',
-    images: ['/public/note-og-meta.jpg'],
+    images: ['/note-og-meta.jpg'],
   },
 };
 

@@ -108,7 +108,7 @@ function MobileOffcanvas({ isOpen, onClose }: MobileOffcanvasProps) {
                 className={linkClass('/sign-in')}
                 onClick={onClose}
               >
-                Sign in
+                Sign In
               </Link>
 
               <Link
@@ -116,7 +116,7 @@ function MobileOffcanvas({ isOpen, onClose }: MobileOffcanvasProps) {
                 className={linkClass('/sign-up')}
                 onClick={onClose}
               >
-                Register
+                Sign Up
               </Link>
             </>
           )}
