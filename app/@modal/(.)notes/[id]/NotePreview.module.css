@@ -63,11 +63,10 @@
   align-self: flex-start;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(89, 195, 106, 0.4);
+  border: 1px solid transparent;
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
   background: rgba(20, 26, 36, 1);
 }
 

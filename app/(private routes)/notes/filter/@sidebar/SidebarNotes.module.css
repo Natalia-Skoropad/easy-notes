@@ -39,9 +39,9 @@
   min-width: 22px;
   padding: 2px 6px;
   border-radius: 999px;
-  background: rgba(89, 195, 106, 0.18);
-  border: 1px solid color-mix(in oklab, var(--accent), #000 40%);
+  border: 1px solid transparent;
   font-size: 12px;
   line-height: 1.2;
   text-align: center;
+  background: rgba(20, 26, 36, 1);
 }

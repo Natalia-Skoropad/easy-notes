@@ -7,10 +7,11 @@ import { usePathname } from 'next/navigation';
 
 import { useAuthStore } from '@/lib/store/authStore';
 import { logout } from '@/lib/api/clientApi';
+import { getTagStyle } from '@/lib/store/tagStyles';
 import { useNotesStats } from '@/hooks/useNotesStats';
 import { Button } from '@/app/components';
 
-import css from '../Header/Header.module.css';
+import css from './MobileOffcanvas.module.css';
 
 //===========================================================================
 
@@ -137,11 +138,14 @@ function MobileOffcanvas({ isOpen, onClose }: MobileOffcanvasProps) {
               >
                 <span>All notes</span>
                 {totalNotes > 0 && (
-                  <span className={css.badge}>{totalNotes}</span>
+                  <span className={css.badge} style={getTagStyle('Work')}>
+                    {totalNotes}
+                  </span>
                 )}
               </Link>
 
               <div className={css.dropdownDivider} />
+
               <Button
                 type="button"
                 text="Logout"

@@ -1,10 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import type { NoteTag } from '@/types/note';
 
+import type { NoteTag } from '@/types/note';
 import { useNotesStats } from '@/hooks/useNotesStats';
+import { getTagStyle } from '@/lib/store/tagStyles';
+
 import css from './CategoriesMenu.module.css';
 
 //===========================================================================
@@ -22,57 +26,55 @@ const TAGS: NoteTag[] = [
   'Todo',
 ];
 
-// той самий маппер класів, але вже з локального css
-const getTagBadgeClass = (tag: NoteTag) => {
-  switch (tag) {
-    case 'Work':
-      return css.badgeWork;
-    case 'Personal':
-      return css.badgePersonal;
-    case 'Meeting':
-      return css.badgeMeeting;
-    case 'Shopping':
-      return css.badgeShopping;
-    case 'Ideas':
-      return css.badgeIdeas;
-    case 'Travel':
-      return css.badgeTravel;
-    case 'Finance':
-      return css.badgeFinance;
-    case 'Health':
-      return css.badgeHealth;
-    case 'Important':
-      return css.badgeImportant;
-    case 'Todo':
-      return css.badgeTodo;
-    default:
-      return '';
-  }
-};
-
 //===========================================================================
 
 function CategoriesMenu() {
-  const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
-  const toggle = () => setIsOpenMenu(prev => !prev);
-
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const pathname = usePathname();
   const { data: stats } = useNotesStats();
 
+  const toggle = () => setIsOpenMenu(prev => !prev);
+
+  const raw = pathname?.replace('/notes/filter', '').replace(/^\//, '') || '';
+  const current = decodeURIComponent(raw || 'all');
+
+  const isNotesSectionActive = pathname.startsWith('/notes');
+
+  const btnClass = `${css.menuBtn} ${
+    isNotesSectionActive ? css.menuBtnActive : ''
+  }`;
+
+  const linkClass = (value: string) =>
+    `${css.menuLink} ${
+      (current === 'all' && value === 'all') || current === value
+        ? css.menuLinkActive
+        : ''
+    }`;
+
   return (
-    <div className={css.menuContainer}>
-      <button onClick={toggle} className={css.menuBtn}>
-        Notes
+    <li
+      className={css.menuContainer}
+      onMouseEnter={() => setIsOpenMenu(true)}
+      onMouseLeave={() => setIsOpenMenu(false)}
+    >
+      <button type="button" onClick={toggle} className={btnClass}>
+        <span>Notes</span>
+        <ChevronDown
+          className={`${css.chevron} ${isOpenMenu ? css.chevronOpen : ''}`}
+        />
       </button>
 
       {isOpenMenu && (
         <ul className={css.menu}>
           <li className={css.menuItem}>
-            <Link href="/notes/filter/all" onClick={toggle}>
+            <Link
+              href="/notes/filter/all"
+              className={linkClass('all')}
+              onClick={() => setIsOpenMenu(false)}
+            >
               <span>All notes</span>
               {stats && stats.total > 0 && (
-                <span className={`${css.badge} ${css.badgeTotal}`}>
-                  {stats.total}
-                </span>
+                <span className={css.badge}>{stats.total}</span>
               )}
             </Link>
           </li>
@@ -81,11 +83,12 @@ function CategoriesMenu() {
             <li key={tag} className={css.menuItem}>
               <Link
                 href={`/notes/filter/${encodeURIComponent(tag)}`}
-                onClick={toggle}
+                className={linkClass(tag)}
+                onClick={() => setIsOpenMenu(false)}
               >
                 <span>{tag}</span>
                 {stats && stats.byTag[tag] > 0 && (
-                  <span className={`${css.badge} ${getTagBadgeClass(tag)}`}>
+                  <span className={css.badge} style={getTagStyle(tag)}>
                     {stats.byTag[tag]}
                   </span>
                 )}
@@ -94,7 +97,7 @@ function CategoriesMenu() {
           ))}
         </ul>
       )}
-    </div>
+    </li>
   );
 }
 

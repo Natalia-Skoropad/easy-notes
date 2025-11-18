@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { NoteTag } from '@/types/note';
-import clsx from 'clsx';
 
+import type { NoteTag } from '@/types/note';
 import { useNotesStats } from '@/hooks/useNotesStats';
+import { getTagStyle } from '@/lib/store/tagStyles';
+
+import clsx from 'clsx';
 import css from './SidebarNotes.module.css';
 
 //===========================================================================
@@ -59,7 +61,9 @@ function NotesSidebar() {
           >
             <span>{tag}</span>
             {stats && stats.byTag[tag] > 0 && (
-              <span className={css.badge}>{stats.byTag[tag]}</span>
+              <span className={css.badge} style={getTagStyle(tag)}>
+                {stats.byTag[tag]}
+              </span>
             )}
           </Link>
         </li>

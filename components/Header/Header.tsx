@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 
-import { AuthNavigation } from '@/app/components';
-import { MobileOffcanvas } from '@/app/components';
+import { AuthNavigation, MobileOffcanvas } from '@/app/components';
 
 import css from './Header.module.css';
 
@@ -13,6 +13,7 @@ import css from './Header.module.css';
 
 function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const openMenu = () => setIsMobileMenuOpen(true);
   const closeMenu = () => setIsMobileMenuOpen(false);
@@ -31,6 +32,13 @@ function Header() {
       document.body.style.touchAction = prevTouchAction;
     };
   }, [isMobileMenuOpen]);
+
+  const linkClass = (href: string) => {
+    const isActive =
+      href === '/' ? pathname === '/' : pathname.startsWith(href);
+
+    return `${css.link} ${isActive ? css.linkActive : ''}`;
+  };
 
   return (
     <header className={css.header}>
@@ -52,13 +60,13 @@ function Header() {
         {/* desktop navigation */}
         <ul className={css.list}>
           <li>
-            <Link href="/" className={css.link}>
+            <Link href="/" className={linkClass('/')}>
               Home
             </Link>
           </li>
 
           <li>
-            <Link href="/about" className={css.link}>
+            <Link href="/about" className={linkClass('/about')}>
               About
             </Link>
           </li>

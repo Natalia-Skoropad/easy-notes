@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 
 import type { Note } from '@/types/note';
 import { deleteNote } from '@/lib/api/clientApi';
+import { getTagStyle } from '@/lib/store/tagStyles';
 import { Button } from '@/app/components';
 
 import css from './NoteList.module.css';
@@ -77,7 +78,9 @@ function NoteList({ notes }: NoteListProps) {
           <p className={css.content}>{content}</p>
 
           <div className={css.footer}>
-            <span className={css.tag}>{tag}</span>
+            <span className={css.tag} style={getTagStyle(tag)}>
+              {tag}
+            </span>
 
             <Button
               text={pendingId === id ? 'Deleting…' : 'Delete'}

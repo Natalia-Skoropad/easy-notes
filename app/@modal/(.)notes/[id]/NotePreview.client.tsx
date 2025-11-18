@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchNoteById } from '@/lib/api/clientApi';
+import { getTagStyle } from '@/lib/store/tagStyles';
 import { Modal, Button } from '@/app/components';
 
 import css from './NotePreview.module.css';
@@ -46,7 +47,9 @@ function NotePreviewClient() {
               </p>
             </div>
 
-            <span className={css.tag}>{note.tag}</span>
+            <span className={css.tag} style={getTagStyle(note.tag)}>
+              {note.tag}
+            </span>
           </>
         )}
         <div className={css.action}>
