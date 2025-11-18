@@ -4,7 +4,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 
-import { Button, Breadcrumbs } from '@/app/components';
+import { Button, Breadcrumbs, ProfileAvatar, Toast } from '@/app/components';
 import { getMe, updateMe } from '@/lib/api/clientApi';
 
 import css from './profileEdit.module.css';
@@ -38,6 +38,11 @@ function EditProfileClient() {
   );
   const [isSaving, setIsSaving] = useState(false);
   const [initials, setInitials] = useState('U');
+
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error';
+  } | null>(null);
 
   // --------------------------------------------------
   // load current user
@@ -116,9 +121,15 @@ function EditProfileClient() {
         setIsSaving(false);
         return;
       }
-      await updateMe({ username: trimmed });
 
-      router.push('/profile');
+      await updateMe({ username: trimmed });
+      setInitialValues({ username: trimmed });
+      setIsSaving(false);
+
+      setToast({
+        message: 'Profile changes saved successfully',
+        type: 'success',
+      });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const fieldErrors: Partial<Record<keyof EditForm, string>> = {};
@@ -133,6 +144,10 @@ function EditProfileClient() {
         setErrors(fieldErrors);
       } else {
         console.error('Oops, some error:', err);
+        setToast({
+          message: 'Failed to update profile. Please try again',
+          type: 'error',
+        });
       }
 
       setIsSaving(false);
@@ -150,70 +165,77 @@ function EditProfileClient() {
   // --------------------------------------------------
 
   return (
-    <section className={css.section}>
-      <div className={css.breadcrumbs}>
-        <Breadcrumbs
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'Profile details', href: '/profile' },
-            { label: 'Profile edit' },
-          ]}
-        />
-      </div>
-
-      <div className={css.card}>
-        <div className={css.headerRow}>
-          <div className={css.titleBox}>
-            <div className={css.badge}>Profile settings</div>
-            <h1 className={css.title}>Profile Edit</h1>
-            <p className={css.subtitle}>
-              Update your display name used across EasyNotes.
-            </p>
-          </div>
-
-          {/* Avatar preview */}
-          <div className={css.avatarArea}>
-            <div className={css.avatarWrap}>
-              <div className={css.avatarStub}>{initials}</div>
-            </div>
-          </div>
+    <>
+      <section className={css.section}>
+        <div className={css.breadcrumbs}>
+          <Breadcrumbs
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Profile details', href: '/profile' },
+              { label: 'Profile edit' },
+            ]}
+          />
         </div>
 
-        <form className={css.form} onSubmit={handleSubmit} noValidate>
-          <label className={css.label}>
-            <span>Username</span>
-            <input
-              className={`${css.input} ${
-                errors.username ? css.inputError : ''
-              }`}
-              type="text"
-              name="username"
-              placeholder="Your name"
-              value={values.username}
-              onChange={handleChange}
-            />
-            {errors.username && (
-              <span className={css.errorField}>{errors.username}</span>
-            )}
-          </label>
+        <div className={css.card}>
+          <div className={css.headerRow}>
+            <div className={css.titleBox}>
+              <div className={css.badge}>Profile settings</div>
+              <h1 className={css.title}>Profile Edit</h1>
+              <p className={css.subtitle}>
+                Update your display name used across EasyNotes.
+              </p>
+            </div>
 
-          <div className={css.actions}>
-            <Button
-              type="submit"
-              text={isSaving ? 'Saving…' : 'Save changes'}
-              disabled={isSaveDisabled}
-            />
-
-            <Button
-              type="button"
-              variant="cancel"
-              text="Cancel"
-              onClick={handleCancel}
-            />
+            {/* Avatar preview */}
+            <div className={css.avatarArea}>
+              <ProfileAvatar initials={initials} size="md" />
+            </div>
           </div>
-        </form>
-      </div>
-    </section>
+
+          <form className={css.form} onSubmit={handleSubmit} noValidate>
+            <label className={css.label}>
+              <span>Username</span>
+              <input
+                className={`${css.input} ${
+                  errors.username ? css.inputError : ''
+                }`}
+                type="text"
+                name="username"
+                placeholder="Your name"
+                value={values.username}
+                onChange={handleChange}
+              />
+              {errors.username && (
+                <span className={css.errorField}>{errors.username}</span>
+              )}
+            </label>
+
+            <div className={css.actions}>
+              <Button
+                type="submit"
+                text={isSaving ? 'Saving…' : 'Save changes'}
+                disabled={isSaveDisabled}
+              />
+
+              <Button
+                type="button"
+                variant="cancel"
+                text="Cancel"
+                onClick={handleCancel}
+              />
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <Toast
+        isOpen={Boolean(toast)}
+        message={toast?.message ?? ''}
+        type={toast?.type ?? 'success'}
+        onClose={() => setToast(null)}
+      />
+    </>
   );
 }
 

@@ -16,5 +16,8 @@ export { default as Pagination } from '@/components/Pagination/Pagination';
 export { default as AvatarPicker } from '@/components/AvatarPicker/AvatarPicker';
 export { default as Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 
+export { default as ProfileAvatar } from '@/components/ProfileAvatar/ProfileAvatar';
+export { default as Toast } from '@/components/Toast/Toast';
+
 export { default as TanStackProvider } from '@/components/TanStackProvider/TanStackProvider';
 export { default as AuthProvider } from '@/components/AuthProvider/AuthProvider';

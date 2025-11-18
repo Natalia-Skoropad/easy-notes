@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-query';
 
 import { fetchNoteById } from '@/lib/api/serverApi';
-import NoteDetailsClient from './NoteDetails.client';
+import NoteEditClient from './NoteEditClient';
 
 // ================================================================
 
@@ -15,30 +15,28 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-const SITE_URL = 'https://easy-notes-ten.vercel.app';
+// ================================================================
 
-// ================================================================
-// SEO
-// ================================================================
+const SITE_URL = 'https://easy-notes-ten.vercel.app';
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const { id } = await props.params;
 
-  let title = 'Note details | EasyNotes';
-  let description =
-    'View a single note in EasyNotes: title, content, tag and timestamps.';
+  let title = 'Edit note | EasyNotes';
+  let description = 'Edit an existing note in EasyNotes.';
 
   try {
     const note = await fetchNoteById(id);
 
     if (note?.title) {
-      title = `${note.title} | EasyNotes`;
+      title = `Edit: ${note.title} | EasyNotes`;
     }
-
     if (note?.content) {
       description = note.content.slice(0, 150);
     }
-  } catch {}
+  } catch {
+    // fallback
+  }
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -47,7 +45,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}/notes/${id}`,
+      url: `${SITE_URL}/notes/${id}/edit`,
       siteName: 'EasyNotes',
       images: [
         {
@@ -70,7 +68,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
 // ================================================================
 
-async function NoteDetails({ params }: PageProps) {
+async function NoteEditPage({ params }: PageProps) {
   const { id } = await params;
   const queryClient = new QueryClient();
 
@@ -81,9 +79,9 @@ async function NoteDetails({ params }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NoteDetailsClient />
+      <NoteEditClient />
     </HydrationBoundary>
   );
 }
 
-export default NoteDetails;
+export default NoteEditPage;

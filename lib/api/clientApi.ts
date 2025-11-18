@@ -32,6 +32,12 @@ type RawFetchNotesResponse = {
   data?: Note[];
 };
 
+export type UpdateNoteRequest = {
+  title?: string;
+  content?: string | null;
+  tag?: NoteTag;
+};
+
 export type CreateNoteInput = Pick<Note, 'title' | 'content' | 'tag'>;
 
 // ---------------- NOTES ---------------------------------------------------
@@ -85,6 +91,14 @@ export async function createNote(input: CreateNoteInput): Promise<Note> {
 export async function deleteNote(id: string): Promise<Note> {
   const res: AxiosResponse<Note> = await nextServer.delete(`/notes/${id}`);
   return res.data;
+}
+
+export async function updateNote(
+  id: string,
+  payload: UpdateNoteRequest
+): Promise<Note> {
+  const { data } = await nextServer.patch<Note>(`/notes/${id}`, payload);
+  return data;
 }
 
 //===========================================================================

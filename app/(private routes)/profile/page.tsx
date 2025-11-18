@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { LinkButton, Breadcrumbs } from '@/app/components';
+import { LinkButton, Breadcrumbs, ProfileAvatar } from '@/app/components';
 import { getMe } from '@/lib/api/serverApi';
 
 import css from './profile.module.css';
@@ -71,8 +71,8 @@ async function Profile() {
       <div className={css.card}>
         <div className={css.topRow}>
           {/* Avatar */}
-          <div className={css.avatarWrap}>
-            <div className={css.avatarStub}>{initials}</div>
+          <div className={css.avatarArea}>
+            <ProfileAvatar initials={initials} size="lg" />
           </div>
 
           {/* Heading */}
