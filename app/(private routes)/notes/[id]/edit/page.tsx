@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-
 import {
   HydrationBoundary,
   QueryClient,
@@ -15,9 +14,9 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-// ================================================================
-
 const SITE_URL = 'https://easy-notes-ten.vercel.app';
+
+// ================================================================
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const { id } = await props.params;
@@ -28,12 +27,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   try {
     const note = await fetchNoteById(id);
 
-    if (note?.title) {
-      title = `Edit: ${note.title} | EasyNotes`;
-    }
-    if (note?.content) {
-      description = note.content.slice(0, 150);
-    }
+    if (note?.title) title = `Edit: ${note.title} | EasyNotes`;
+    if (note?.content) description = note.content.slice(0, 150);
   } catch {
     // fallback
   }

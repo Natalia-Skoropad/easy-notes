@@ -1,86 +1,77 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
-import { toast } from 'react-hot-toast';
 
-import { createNote, type CreateNoteInput } from '@/lib/api/clientApi';
 import type { NoteTag } from '@/types/note';
-import { useNoteDraftStore } from '@/lib/store/noteStore';
+import type { CreateNoteInput } from '@/lib/api/clientApi';
 import { Button } from '@/app/components';
 
 import css from './NoteForm.module.css';
 
-//===========================================================================
+// --------------------------------------------------
+// Типи
+// --------------------------------------------------
 
-const TAGS: NoteTag[] = [
-  'Work',
-  'Personal',
-  'Meeting',
-  'Shopping',
-  'Ideas',
-  'Travel',
-  'Finance',
-  'Health',
-  'Important',
-  'Todo',
-];
+type NoteFormValues = CreateNoteInput;
 
-type FieldErrors = Partial<Record<keyof CreateNoteInput, string>>;
+type FieldErrors = Partial<Record<keyof NoteFormValues, string>>;
 
 interface NoteFormProps {
+  mode: 'create' | 'edit';
   tags: NoteTag[];
+  initialValues: NoteFormValues;
+  isSubmitting?: boolean;
+  onSubmit: (values: NoteFormValues) => Promise<void> | void;
+  onCancel: () => void;
+  /** опціонально — щоб зберігати драфт зовні (create) */
+  onChange?: (values: NoteFormValues) => void;
 }
 
-//===========================================================================
+// --------------------------------------------------
+// Схема валідації
+// --------------------------------------------------
 
-const schema = Yup.object({
-  title: Yup.string()
-    .trim()
-    .min(3, 'Title too short')
-    .max(50, 'Title too long')
-    .required('Title is required'),
-  content: Yup.string()
-    .trim()
-    .max(500, 'Content too long')
-    .required('Content is required'),
-  tag: Yup.mixed<NoteTag>().oneOf(TAGS, 'Invalid tag').required('Select tag'),
-});
-
-//===========================================================================
-
-function NoteForm({ tags }: NoteFormProps) {
-  const router = useRouter();
-  const fieldId = useId();
-  const queryClient = useQueryClient();
-
-  const { draft, setDraft, clearDraft } = useNoteDraftStore();
-  const [errors, setErrors] = useState<FieldErrors>({});
-
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: (data: CreateNoteInput) => createNote(data),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-      clearDraft();
-      toast.success('Note created successfully');
-      router.back();
-    },
-
-    onError: (err: unknown) => {
-      const msg = err instanceof Error ? err.message : 'Failed to create note';
-      toast.error(msg);
-    },
+const buildSchema = (tags: NoteTag[]) =>
+  Yup.object({
+    title: Yup.string()
+      .trim()
+      .min(3, 'Title too short')
+      .max(50, 'Title too long')
+      .required('Title is required'),
+    content: Yup.string()
+      .trim()
+      .min(5, 'Content too short')
+      .max(500, 'Content too long')
+      .required('Content is required'),
+    tag: Yup.mixed<NoteTag>().oneOf(tags, 'Invalid tag').required('Select tag'),
   });
 
+/* ====================================================================== */
+
+function NoteForm({
+  tags,
+  mode,
+  initialValues,
+  isSubmitting = false,
+  onSubmit,
+  onCancel,
+  onChange,
+}: NoteFormProps) {
+  const fieldId = useId();
+
+  // Локальний стан форми (і НІЯКИХ useEffect)
+  const [values, setValues] = useState<NoteFormValues>(initialValues);
+  const [errors, setErrors] = useState<FieldErrors>({});
+
+  const schema = buildSchema(tags);
+
   const validateField = async (
-    name: keyof CreateNoteInput,
-    next: CreateNoteInput
+    name: keyof NoteFormValues,
+    next: NoteFormValues
   ) => {
     try {
-      await schema.validateAt(name, next);
+      await schema.validateAt(name as string, next);
       setErrors(prev => ({ ...prev, [name]: undefined }));
     } catch (err) {
       const msg =
@@ -95,95 +86,125 @@ function NoteForm({ tags }: NoteFormProps) {
     >
   ) => {
     const { name, value } = event.target;
-    const next = { ...draft, [name]: value } as CreateNoteInput;
-    setDraft(next);
-    await validateField(name as keyof CreateNoteInput, next);
+    const key = name as keyof NoteFormValues;
+
+    const next = { ...values, [key]: value } as NoteFormValues;
+
+    setValues(next);
+    onChange?.(next); // щоб зберігати драфт при створенні
+
+    await validateField(key, next);
   };
 
-  const handleSubmit = async (formData: FormData) => {
-    const values = Object.fromEntries(formData) as unknown as CreateNoteInput;
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     try {
-      await schema.validate(values, { abortEarly: false });
-      await mutateAsync(values);
+      const valid = (await schema.validate(values, {
+        abortEarly: false,
+      })) as NoteFormValues;
+
+      await onSubmit(valid);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const collected: FieldErrors = {};
         for (const e of err.inner) {
-          if (e.path) collected[e.path as keyof CreateNoteInput] = e.message;
+          if (e.path) collected[e.path as keyof NoteFormValues] = e.message;
         }
         setErrors(collected);
       }
     }
   };
 
-  const isFormValid = schema.isValidSync(draft);
-  const cancel = () => router.back();
+  const isFormValid =
+    schema.isValidSync(values) && !Object.values(errors).some(Boolean);
+
+  const isDisabled = isSubmitting || !isFormValid;
+
+  const submitText =
+    mode === 'create'
+      ? isSubmitting
+        ? 'Creating…'
+        : 'Create'
+      : isSubmitting
+      ? 'Saving…'
+      : 'Save changes';
 
   return (
-    <form className={css.form} action={handleSubmit} noValidate>
+    <form className={css.form} onSubmit={handleSubmit} noValidate>
       <div className={css.formGroup}>
-        <label htmlFor={`${fieldId}-title`}>Title*</label>
-        <input
-          id={`${fieldId}-title`}
-          className={css.input}
-          type="text"
-          name="title"
-          value={draft.title}
-          onChange={handleChange}
-          required
-          maxLength={50}
-          aria-invalid={!!errors.title}
-        />
-        {errors.title && <span className={css.error}>{errors.title}</span>}
+        <label className={css.label} htmlFor={`${fieldId}-title`}>
+          <span>Title*</span>
+          <input
+            id={`${fieldId}-title`}
+            className={`${css.input} ${errors.title ? css.inputError : ''}`}
+            type="text"
+            name="title"
+            value={values.title}
+            onChange={handleChange}
+            required
+            maxLength={50}
+            aria-invalid={!!errors.title}
+          />
+          {errors.title && <span className={css.error}>{errors.title}</span>}
+        </label>
       </div>
 
       <div className={css.formGroup}>
-        <label htmlFor={`${fieldId}-content`}>Content*</label>
-        <textarea
-          id={`${fieldId}-content`}
-          className={css.textarea}
-          name="content"
-          value={draft.content}
-          onChange={handleChange}
-          required
-          rows={8}
-          maxLength={500}
-          aria-invalid={!!errors.content}
-        />
-        {errors.content && <span className={css.error}>{errors.content}</span>}
+        <label className={css.label} htmlFor={`${fieldId}-content`}>
+          <span>Content*</span>
+          <textarea
+            id={`${fieldId}-content`}
+            className={`${css.textarea} ${
+              errors.content ? css.textareaError : ''
+            }`}
+            name="content"
+            value={values.content}
+            onChange={handleChange}
+            required
+            rows={8}
+            maxLength={500}
+            aria-invalid={!!errors.content}
+          />
+          {errors.content && (
+            <span className={css.error}>{errors.content}</span>
+          )}
+        </label>
       </div>
 
       <div className={css.formGroup}>
-        <label htmlFor={`${fieldId}-tag`}>Tag*</label>
-        <select
-          id={`${fieldId}-tag`}
-          className={css.select}
-          name="tag"
-          value={draft.tag}
-          onChange={handleChange}
-          required
-          aria-invalid={!!errors.tag}
-        >
-          <option value="" disabled>
-            Choose tag…
-          </option>
-          {tags.map(tag => (
-            <option key={tag} value={tag}>
-              {tag}
+        <label className={css.label} htmlFor={`${fieldId}-tag`}>
+          <span>Tag*</span>
+          <select
+            id={`${fieldId}-tag`}
+            className={`${css.select} ${errors.tag ? css.selectError : ''}`}
+            name="tag"
+            value={values.tag}
+            onChange={handleChange}
+            required
+            aria-invalid={!!errors.tag}
+          >
+            <option value="" disabled>
+              Choose tag…
             </option>
-          ))}
-        </select>
-        {errors.tag && <span className={css.error}>{errors.tag}</span>}
+            {tags.map(tag => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+          {errors.tag && <span className={css.error}>{errors.tag}</span>}
+        </label>
       </div>
 
       <div className={css.actions}>
+        <Button type="submit" text={submitText} disabled={isDisabled} />
         <Button
-          type="submit"
-          text={isPending ? 'Creating…' : 'Create'}
-          disabled={isPending || !isFormValid}
+          type="button"
+          variant="cancel"
+          onClick={onCancel}
+          text="Cancel"
         />
-
-        <Button type="button" variant="cancel" onClick={cancel} text="Cancel" />
       </div>
     </form>
   );

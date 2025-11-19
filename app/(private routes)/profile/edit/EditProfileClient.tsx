@@ -4,7 +4,14 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 
-import { Button, Breadcrumbs, ProfileAvatar, Toast } from '@/app/components';
+import {
+  Button,
+  Breadcrumbs,
+  ProfileAvatar,
+  Toast,
+  ConfirmDialog,
+} from '@/app/components';
+
 import { getMe, updateMe } from '@/lib/api/clientApi';
 
 import css from './profileEdit.module.css';
@@ -19,7 +26,7 @@ const editProfileSchema = Yup.object({
   username: Yup.string()
     .transform(value => ((value ?? '').trim() === '' ? undefined : value))
     .min(2, 'Username must be at least 2 characters')
-    .max(20, 'No more than 20 characters')
+    .max(10, 'No more than 10 characters')
     .notRequired(),
 });
 
@@ -43,6 +50,9 @@ function EditProfileClient() {
     message: string;
     type: 'success' | 'error';
   } | null>(null);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState<EditForm | null>(null);
 
   // --------------------------------------------------
   // load current user
@@ -108,28 +118,19 @@ function EditProfileClient() {
 
     if (!hasChanges) return;
 
-    setIsSaving(true);
-
     try {
       const valid = (await editProfileSchema.validate(values, {
         abortEarly: false,
       })) as EditForm;
 
-      const trimmed = valid.username?.trim();
+      const trimmed = valid.username?.trim() ?? '';
 
       if (!trimmed) {
-        setIsSaving(false);
         return;
       }
 
-      await updateMe({ username: trimmed });
-      setInitialValues({ username: trimmed });
-      setIsSaving(false);
-
-      setToast({
-        message: 'Profile changes saved successfully',
-        type: 'success',
-      });
+      setPendingValues({ username: trimmed });
+      setIsConfirmOpen(true);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const fieldErrors: Partial<Record<keyof EditForm, string>> = {};
@@ -142,15 +143,32 @@ function EditProfileClient() {
         });
 
         setErrors(fieldErrors);
-      } else {
-        console.error('Oops, some error:', err);
-        setToast({
-          message: 'Failed to update profile. Please try again',
-          type: 'error',
-        });
       }
+    }
+  };
 
+  const handleConfirmSave = async () => {
+    if (!pendingValues) return;
+
+    setIsSaving(true);
+
+    try {
+      await updateMe({ username: pendingValues.username });
+      setInitialValues({ username: pendingValues.username });
+      setToast({
+        message: 'Profile changes saved successfully',
+        type: 'success',
+      });
+    } catch (err) {
+      console.error('Oops, some error:', err);
+      setToast({
+        message: 'Failed to update profile. Please try again',
+        type: 'error',
+      });
+    } finally {
       setIsSaving(false);
+      setIsConfirmOpen(false);
+      setPendingValues(null);
     }
   };
 
@@ -229,6 +247,23 @@ function EditProfileClient() {
         </div>
       </section>
 
+      {/* Confirm dialog */}
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Save changes"
+        message="Are you sure you want to save your profile changes?"
+        confirmText={isSaving ? 'Saving…' : 'Yes, save'}
+        cancelText="Cancel"
+        confirmVariant="normal"
+        onConfirm={handleConfirmSave}
+        onCancel={() => {
+          if (isSaving) return;
+          setIsConfirmOpen(false);
+          setPendingValues(null);
+        }}
+      />
+
+      {/* Toast */}
       <Toast
         isOpen={Boolean(toast)}
         message={toast?.message ?? ''}

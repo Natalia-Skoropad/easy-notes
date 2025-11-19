@@ -1,0 +1,31 @@
+.dialog {
+  display: grid;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.message {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.extra {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal {
+  max-width: 300px !important;
+}

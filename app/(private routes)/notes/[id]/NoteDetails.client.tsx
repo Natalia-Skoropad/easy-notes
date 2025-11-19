@@ -1,10 +1,18 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 
-import { Breadcrumbs, LinkButton } from '@/app/components';
-import { fetchNoteById } from '@/lib/api/clientApi';
+import {
+  Breadcrumbs,
+  LinkButton,
+  Button,
+  ConfirmDialog,
+} from '@/app/components';
+
+import { deleteNote, fetchNoteById } from '@/lib/api/clientApi';
 import { getTagStyle } from '@/lib/store/tagStyles';
 
 import css from './NoteDetails.module.css';
@@ -15,6 +23,11 @@ function NoteDetailsClient() {
   const params = useParams<{ id: string }>();
   const id = params?.id;
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+
   const {
     data: note,
     isLoading,
@@ -24,6 +37,21 @@ function NoteDetailsClient() {
     queryFn: () => fetchNoteById(id!),
     enabled: Boolean(id),
     refetchOnMount: false,
+  });
+
+  const { mutateAsync: deleteNoteMutate, isPending: isDeleting } = useMutation({
+    mutationFn: (noteId: string) => deleteNote(noteId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      queryClient.removeQueries({ queryKey: ['note', id] });
+
+      toast.success('Note deleted successfully');
+      router.push('/notes/filter/all');
+    },
+    onError: err => {
+      const msg = err instanceof Error ? err.message : 'Failed to delete note';
+      toast.error(msg);
+    },
   });
 
   if (isLoading) {
@@ -48,6 +76,12 @@ function NoteDetailsClient() {
       ? new Date(note.updatedAt).toLocaleString()
       : null;
 
+  const handleDeleteConfirm = async () => {
+    if (!id) return;
+    setIsConfirmDeleteOpen(false);
+    await deleteNoteMutate(id);
+  };
+
   return (
     <section className={css.section}>
       <div className={css.breadcrumbs}>
@@ -55,7 +89,7 @@ function NoteDetailsClient() {
           items={[
             { label: 'Home', href: '/' },
             { label: 'All notes', href: '/notes/filter/all' },
-            { label: 'Note details' },
+            { label: note.title || 'Note details' },
           ]}
         />
       </div>
@@ -90,18 +124,31 @@ function NoteDetailsClient() {
         </div>
 
         <div className={css.actions}>
-          <LinkButton
-            href={`/notes/filter/all`}
-            text="All Notes"
-            variant="normal"
+          <Button
+            text={isDeleting ? 'Deleting…' : 'Delete'}
+            variant="delete"
+            type="button"
+            onClick={() => setIsConfirmDeleteOpen(true)}
+            disabled={isDeleting}
           />
           <LinkButton
             href={`/notes/${note.id}/edit`}
             text="Edit Note"
-            variant="cancel"
+            variant="normal"
           />
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isConfirmDeleteOpen}
+        title="Delete note"
+        message="Are you sure you want to delete this note? This action cannot be undone."
+        confirmText={isDeleting ? 'Deleting…' : 'Yes, delete'}
+        cancelText="Cancel"
+        confirmVariant="delete"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setIsConfirmDeleteOpen(false)}
+      />
     </section>
   );
 }

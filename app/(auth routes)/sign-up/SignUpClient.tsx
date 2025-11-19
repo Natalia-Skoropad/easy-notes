@@ -19,10 +19,11 @@ const signUpSchema = Yup.object({
   username: Yup.string()
     .transform(value => ((value ?? '').trim() === '' ? undefined : value))
     .min(2, 'Username must be at least 2 characters')
-    .max(20, 'No more than 20 characters')
+    .max(10, 'No more than 10 characters')
     .notRequired(),
   email: Yup.string()
     .email('Enter a valid email.')
+    .max(64, 'No more than 64 characters')
     .required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
@@ -95,9 +96,18 @@ function SignUpClient() {
       const user = await register(payload);
       setUser(user);
 
-      if (valid.username) {
+      let displayName: string | undefined;
+
+      if (valid.username && valid.username.trim()) {
+        displayName = valid.username.trim();
+      } else {
+        const emailName = valid.email.split('@')[0] ?? valid.email;
+        displayName = emailName.slice(0, 10);
+      }
+
+      if (displayName) {
         try {
-          const updated = await updateMe({ username: valid.username });
+          const updated = await updateMe({ username: displayName });
           setUser(updated);
         } catch (updateErr) {
           console.error('Failed to update username', updateErr);

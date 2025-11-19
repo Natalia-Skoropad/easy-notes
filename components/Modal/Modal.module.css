@@ -10,7 +10,7 @@
 
 .modal {
   width: 100%;
-  max-width: 720px;
+  max-width: 500px;
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--radius-3);

@@ -37,6 +37,10 @@
   gap: 18px;
 }
 
+.header > div:first-child {
+  min-width: 0;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -55,6 +59,9 @@
 .title {
   margin: 0;
   font-size: clamp(20px, 2.4vw, 26px);
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .tag {
@@ -73,6 +80,9 @@
   font-size: 14px;
   line-height: 1.6;
   white-space: pre-wrap;
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .metaRow {
@@ -110,17 +120,26 @@
   color: var(--danger);
 }
 
-/* mobile */
-
-@media (max-width: 768px) {
-  .card {
-    padding: 18px 14px 16px;
-  }
-}
-
 .actions {
   margin-top: 6px;
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+}
+
+.actionBtn {
+  min-width: 110px;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .actionBtn {
+    flex: 1 1 100%;
+    text-align: center;
+  }
 }

@@ -18,6 +18,7 @@ export { default as Breadcrumbs } from '@/components/Breadcrumbs/Breadcrumbs';
 
 export { default as ProfileAvatar } from '@/components/ProfileAvatar/ProfileAvatar';
 export { default as Toast } from '@/components/Toast/Toast';
+export { default as ConfirmDialog } from '@/components/ConfirmDialog/ConfirmDialog';
 
 export { default as TanStackProvider } from '@/components/TanStackProvider/TanStackProvider';
 export { default as AuthProvider } from '@/components/AuthProvider/AuthProvider';

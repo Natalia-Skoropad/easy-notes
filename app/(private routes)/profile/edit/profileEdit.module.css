@@ -90,7 +90,6 @@
   display: grid;
   gap: 6px;
   font-size: 14px;
-  color: var(--text);
   position: relative;
   padding-bottom: 12px;
 }
@@ -116,7 +115,8 @@
   box-shadow: 0 0 0 1px rgba(255, 86, 86, 0.35);
 }
 
-.inputError:hover {
+.inputError:hover,
+.inputError:focus {
   outline: none;
   box-shadow: none;
 }
