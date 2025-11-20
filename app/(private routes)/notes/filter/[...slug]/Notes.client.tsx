@@ -111,7 +111,7 @@ function NotesClient({ tag }: { tag?: NoteTag }) {
             <div className={css.mobileOnly}>
               <Button
                 type="button"
-                text="More Actions"
+                text="Actions"
                 variant="normal"
                 onClick={() => setIsActionsOpen(true)}
               />
