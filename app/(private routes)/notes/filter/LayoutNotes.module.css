@@ -1,11 +1,12 @@
 .container {
+  padding-block: 0;
   display: grid;
-  gap: 20px;
-  padding-block: 32px 44px;
+  gap: 18px;
 }
 
 .sidebar {
   order: -1;
+  display: none;
 }
 
 .notesWrapper {
@@ -13,7 +14,12 @@
   gap: 16px;
 }
 
-@media (min-width: 960px) {
+.breadcrumbsTop {
+  padding-block: 20px 0;
+  font-size: 13px;
+}
+
+@media (min-width: 1440px) {
   .container {
     grid-template-columns: 220px minmax(0, 1fr);
     align-items: flex-start;
@@ -21,5 +27,6 @@
 
   .sidebar {
     order: 0;
+    display: block;
   }
 }

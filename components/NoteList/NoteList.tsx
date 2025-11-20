@@ -54,9 +54,7 @@ function NoteList({ notes }: NoteListProps) {
     try {
       setPendingId(confirmId);
       await mutateAsync(confirmId);
-    } catch {
-      // already handled in onError
-    }
+    } catch {}
   };
 
   const openDeleteDialog = (id: string) => {

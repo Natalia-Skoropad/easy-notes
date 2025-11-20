@@ -15,11 +15,9 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-const SITE_URL = 'https://easy-notes-ten.vercel.app';
+// ================================================================
 
-// ================================================================
-// SEO
-// ================================================================
+const SITE_URL = 'https://easy-notes-ten.vercel.app';
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const { id } = await props.params;

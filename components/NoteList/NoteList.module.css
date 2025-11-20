@@ -94,15 +94,13 @@
   justify-content: flex-end;
 }
 
-/* планшет: 2 нотатки в ряд */
 @media (min-width: 768px) {
   .list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* десктоп: 3 нотатки в ряд */
-@media (min-width: 1024px) {
+@media (min-width: 1440px) {
   .list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

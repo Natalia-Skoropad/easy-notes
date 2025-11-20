@@ -9,12 +9,9 @@ import { Button } from '@/app/components';
 
 import css from './NoteForm.module.css';
 
-// --------------------------------------------------
-// Типи
-// --------------------------------------------------
+//===============================================================
 
 type NoteFormValues = CreateNoteInput;
-
 type FieldErrors = Partial<Record<keyof NoteFormValues, string>>;
 
 interface NoteFormProps {
@@ -24,13 +21,10 @@ interface NoteFormProps {
   isSubmitting?: boolean;
   onSubmit: (values: NoteFormValues) => Promise<void> | void;
   onCancel: () => void;
-  /** опціонально — щоб зберігати драфт зовні (create) */
   onChange?: (values: NoteFormValues) => void;
 }
 
-// --------------------------------------------------
-// Схема валідації
-// --------------------------------------------------
+//===============================================================
 
 const buildSchema = (tags: NoteTag[]) =>
   Yup.object({
@@ -47,7 +41,7 @@ const buildSchema = (tags: NoteTag[]) =>
     tag: Yup.mixed<NoteTag>().oneOf(tags, 'Invalid tag').required('Select tag'),
   });
 
-/* ====================================================================== */
+//===============================================================
 
 function NoteForm({
   tags,
@@ -59,11 +53,8 @@ function NoteForm({
   onChange,
 }: NoteFormProps) {
   const fieldId = useId();
-
-  // Локальний стан форми (і НІЯКИХ useEffect)
   const [values, setValues] = useState<NoteFormValues>(initialValues);
   const [errors, setErrors] = useState<FieldErrors>({});
-
   const schema = buildSchema(tags);
 
   const validateField = async (
@@ -87,12 +78,10 @@ function NoteForm({
   ) => {
     const { name, value } = event.target;
     const key = name as keyof NoteFormValues;
-
     const next = { ...values, [key]: value } as NoteFormValues;
 
     setValues(next);
-    onChange?.(next); // щоб зберігати драфт при створенні
-
+    onChange?.(next);
     await validateField(key, next);
   };
 

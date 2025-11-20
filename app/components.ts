@@ -9,6 +9,7 @@ export { default as NoteList } from '@/components/NoteList/NoteList';
 export { default as SearchBox } from '@/components/SearchBox/SearchBox';
 export { default as EmptyState } from '@/components/EmptyState/EmptyState';
 export { default as MobileOffcanvas } from '@/components/MobileOffcanvas/MobileOffcanvas';
+export { default as NotesActionsOffcanvas } from '@/components/NotesActionsOffcanvas/NotesActionsOffcanvas';
 
 export { default as Button } from '@/components/Button/Button';
 export { default as LinkButton } from '@/components/LinkButton/LinkButton';

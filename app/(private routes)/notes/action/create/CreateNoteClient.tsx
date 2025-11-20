@@ -30,7 +30,6 @@ const TAGS: NoteTag[] = [
 function CreateNoteClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
-
   const { draft, setDraft, clearDraft } = useNoteDraftStore();
 
   const { mutateAsync, isPending } = useMutation({
@@ -52,7 +51,6 @@ function CreateNoteClient() {
   };
 
   const handleCancel = () => router.back();
-
   const handleChange = (values: CreateNoteInput) => {
     setDraft(values);
   };
