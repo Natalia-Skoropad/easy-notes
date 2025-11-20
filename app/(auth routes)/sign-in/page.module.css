@@ -129,17 +129,23 @@
 
 .passwordInput {
   width: 100%;
-  padding-right: 38px;
+  padding-right: 48px;
 }
 
 .passwordToggle {
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
+
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+
   border: none;
   background: transparent;
   padding: 0;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
