@@ -45,7 +45,7 @@ body {
   background: radial-gradient(
         1200px 800px at 70% -20%,
         rgba(89, 195, 106, 0.15),
-        transparent 60%
+        transparent
       )
       no-repeat,
     var(--bg);
