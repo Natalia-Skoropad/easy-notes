@@ -41,12 +41,18 @@
   margin-top: 10px;
 }
 
-.label {
+/* НОВИЙ контейнер поля */
+.field {
   display: grid;
   gap: 6px;
   font-size: 14px;
   position: relative;
   padding-bottom: 12px;
+}
+
+/* label тепер тільки для тексту */
+.label {
+  font-size: 14px;
 }
 
 .input {

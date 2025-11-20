@@ -164,9 +164,14 @@ function SignUpClient() {
         </p>
 
         <form className={css.form} onSubmit={handleSubmit} noValidate>
-          <label className={css.label}>
-            <span>Username</span>
+          {/* Username */}
+          <div className={css.field}>
+            <label className={css.label} htmlFor="username">
+              <span>Username</span>
+            </label>
+
             <input
+              id="username"
               className={`${css.input} ${
                 errors.username ? css.inputError : ''
               }`}
@@ -176,14 +181,20 @@ function SignUpClient() {
               value={values.username}
               onChange={handleChange}
             />
+
             {errors.username && (
               <span className={css.errorField}>{errors.username}</span>
             )}
-          </label>
+          </div>
 
-          <label className={css.label}>
-            <span>Email*</span>
+          {/* Email */}
+          <div className={css.field}>
+            <label className={css.label} htmlFor="email">
+              <span>Email*</span>
+            </label>
+
             <input
+              id="email"
               className={`${css.input} ${errors.email ? css.inputError : ''}`}
               type="email"
               name="email"
@@ -191,15 +202,21 @@ function SignUpClient() {
               value={values.email}
               onChange={handleChange}
             />
+
             {errors.email && (
               <span className={css.errorField}>{errors.email}</span>
             )}
-          </label>
+          </div>
 
-          <label className={css.label}>
-            <span>Password*</span>
+          {/* Password */}
+          <div className={css.field}>
+            <label className={css.label} htmlFor="password">
+              <span>Password*</span>
+            </label>
+
             <div className={css.passwordField}>
               <input
+                id="password"
                 className={`${css.input} ${
                   errors.password ? css.inputError : ''
                 } ${css.passwordInput}`}
@@ -209,6 +226,7 @@ function SignUpClient() {
                 value={values.password}
                 onChange={handleChange}
               />
+
               <button
                 type="button"
                 className={css.passwordToggle}
@@ -222,12 +240,14 @@ function SignUpClient() {
                 )}
               </button>
             </div>
+
             {errors.password && (
               <span className={css.errorField}>{errors.password}</span>
             )}
-          </label>
+          </div>
 
           {authError && <p className={css.errorCommon}>{authError}</p>}
+
           <Button type="submit" text="Sign Up" variant="normal" />
         </form>
 

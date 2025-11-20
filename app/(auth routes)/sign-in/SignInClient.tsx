@@ -127,9 +127,14 @@ function SignInClient() {
         <p className={css.subtitle}>Access your private notes dashboard.</p>
 
         <form className={css.form} onSubmit={handleSubmit} noValidate>
-          <label className={css.label}>
-            <span>Email*</span>
+          {/* Email */}
+          <div className={css.field}>
+            <label className={css.label} htmlFor="email">
+              <span>Email*</span>
+            </label>
+
             <input
+              id="email"
               className={`${css.input} ${errors.email ? css.inputError : ''}`}
               type="email"
               name="email"
@@ -137,15 +142,21 @@ function SignInClient() {
               value={values.email}
               onChange={handleChange}
             />
+
             {errors.email && (
               <span className={css.errorField}>{errors.email}</span>
             )}
-          </label>
+          </div>
 
-          <label className={css.label}>
-            <span>Password*</span>
+          {/* Password */}
+          <div className={css.field}>
+            <label className={css.label} htmlFor="password">
+              <span>Password*</span>
+            </label>
+
             <div className={css.passwordField}>
               <input
+                id="password"
                 className={`${css.input} ${
                   errors.password ? css.inputError : ''
                 } ${css.passwordInput}`}
@@ -155,6 +166,7 @@ function SignInClient() {
                 value={values.password}
                 onChange={handleChange}
               />
+
               <button
                 type="button"
                 className={css.passwordToggle}
@@ -168,10 +180,11 @@ function SignInClient() {
                 )}
               </button>
             </div>
+
             {errors.password && (
               <span className={css.errorField}>{errors.password}</span>
             )}
-          </label>
+          </div>
 
           {authError && (
             <p className={css.errorCommon}>
