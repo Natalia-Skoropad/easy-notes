@@ -67,6 +67,9 @@ function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+
       <body className={montserrat.variable}>
         <TanStackProvider>
           <AuthProvider>
